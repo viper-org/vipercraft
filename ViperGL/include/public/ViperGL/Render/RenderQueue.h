@@ -1,6 +1,8 @@
 #pragma once
 
 #include <ViperGL/Render/Rect.h>
+#include <ViperGL/Render/Voxel.h>
+
 #include <ViperGL/Camera/Camera.h>
 
 #include <memory>
@@ -21,6 +23,7 @@ namespace ViperGL
 		void init();
 
 		void push(const Rect& rect);
+		void push(const Voxel& voxel);
 
 		void draw();
 

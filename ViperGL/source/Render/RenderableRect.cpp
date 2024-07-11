@@ -2,23 +2,22 @@
 
 namespace ViperGL
 {
-	RenderableRect::RenderableRect(float x1, float y1, float x2, float y2, ShaderProgram* shader)
-		: x1(x1)
-		, y1(y1)
-		, x2(x2)
-		, y2(y2)
+	RenderableRect::RenderableRect(float x, float y, ShaderProgram* shader)
+		: x(x)
+		, y(y)
 	{
 		mShaderProgram = shader;
+		mPosition = glm::vec3(x, y, 0.f);
 	}
 
 	void RenderableRect::init()
 	{
 		mVO.~VertexObject();
 		new (&mVO) VertexObject({
-			x1, y1, 0.f,
-			x1, y2, 0.f,
-			x2, y1, 0.f,
-			x2, y2, 0.f,
+			 0.5f,  0.5f, 0.f,
+			 0.5f, -0.5f, 0.f,
+			-0.5f,  0.5f, 0.f,
+			-0.5f, -0.5f, 0.f
 		});
 
 		mEB.~ElementBuffer();

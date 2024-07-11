@@ -2,6 +2,7 @@
 
 #include <Render/Renderable.h>
 #include <Render/RenderableRect.h>
+#include <Render/RenderableVoxel.h>
 #include <Render/Cam.h>
 
 #include <Shader/Shader.h>
@@ -26,7 +27,13 @@ namespace ViperGL
 
 	void RenderQueue::push(const Rect& rect)
 	{
-		mRenderables.push_back(std::make_unique<RenderableRect>(rect.x1, rect.y1, rect.x2, rect.y2, mMainShader.get()));
+		mRenderables.push_back(std::make_unique<RenderableRect>(rect.x, rect.y, mMainShader.get()));
+		mRenderables.back()->init();
+	}
+
+	void RenderQueue::push(const Voxel& voxel)
+	{
+		mRenderables.push_back(std::make_unique<RenderableVoxel>(voxel.mX, voxel.mY, voxel.mZ, mMainShader.get(), Texture(voxel.mTextureName)));
 		mRenderables.back()->init();
 	}
 

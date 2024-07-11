@@ -7,10 +7,10 @@ namespace ViperGL
 	{
 	friend class RenderQueue;
 	public:
-		Rect(float x1, float y1, float x2, float y2);
+		Rect(float x, float y);
 
 	private:
-		float x1, y1;
-		float x2, y2;
+		float x;
+		float y;
 	};
 }

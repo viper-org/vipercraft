@@ -2,8 +2,12 @@
 
 #include <Shader/Shader.h>
 
+#include <Texture/Texture.h>
+
 #include <Vertex/ElementBuffer.h>
 #include <Vertex/VertexObject.h>
+
+#include <glm/vec3.hpp>
 
 namespace ViperGL
 {
@@ -18,5 +22,8 @@ namespace ViperGL
 		VertexObject mVO;
 		ElementBuffer mEB;
 		ShaderProgram* mShaderProgram{ nullptr };
+		Texture* mTexture{ nullptr };
+
+		glm::vec3 mPosition{ 0.f, 1.f, 0.f };
 	};
 }

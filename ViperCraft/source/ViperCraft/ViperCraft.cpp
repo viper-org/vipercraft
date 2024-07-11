@@ -29,8 +29,7 @@ namespace ViperCraft
 		mWindow.postInit(); // stuff that requires glad to be loaded
 		mRenderQueue.init();
 
-		mRenderQueue.push(ViperGL::Rect(0.f, 0.f, 0.25f, 0.25f));
-		mRenderQueue.push(ViperGL::Rect(-0.25f, -0.25f, 0.f, 0.f));
+		mRenderQueue.push(ViperGL::Voxel(0.5f, 0.5f, -1.f, "cobblestone"));
 
 		errorCode = ViperCraftErrorCode::Success;
 	}

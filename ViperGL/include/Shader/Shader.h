@@ -33,7 +33,7 @@ namespace ViperGL
 	class ShaderProgram
 	{
 	public:
-		ShaderProgram(std::string name, ShaderErrorCode& errorCode); // vertex and fragment shaders are at location ./shaders/{name}.vert and ./shaders/{name}.frag respectively
+		ShaderProgram(std::string name, ShaderErrorCode& errorCode); // vertex and fragment shaders are at location ./shader/{name}.vert and ./shader/{name}.frag respectively
 
 		void use();
 
