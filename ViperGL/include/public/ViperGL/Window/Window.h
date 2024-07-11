@@ -22,6 +22,7 @@ namespace ViperGL
 		void postInit();
 
 		bool shouldClose() const;
+		void clear();
 		void mainLoop();
 
 		unsigned int getWidth() const;

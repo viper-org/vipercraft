@@ -41,6 +41,7 @@ namespace ViperCraft
 		{
 			processInput();
 
+			mWindow.clear();
 			render();
 
 			postEvents();
@@ -56,7 +57,6 @@ namespace ViperCraft
 
 	void ViperCraft::render()
 	{
-		glClearColor(1.f, 0.f, 1.f, 1.f);
 	}
 
 	void ViperCraft::postEvents()

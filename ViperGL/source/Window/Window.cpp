@@ -1,5 +1,8 @@
 #include <ViperGL/Window/Window.h>
 
+#include <Shader/Shader.h>
+#include <Vertex/VertexObject.h>
+
 #include <glad/glad.h>
 
 namespace ViperGL
@@ -44,9 +47,26 @@ namespace ViperGL
 		return glfwWindowShouldClose(mWindowCtx);
 	}
 
+	void Window::clear()
+	{
+		glClearColor(1.f, 0.f, 1.f, 1.f);
+		glClear(GL_COLOR_BUFFER_BIT);
+	}
+
 	void Window::mainLoop()
 	{
-		glClear(GL_COLOR_BUFFER_BIT);
+		// this is really bad but its temporary
+		ShaderErrorCode ec;
+		ShaderProgram shader("test", ec);
+		shader.use();
+		VertexObject v({
+			-0.5f, -0.5f, 0.0f, // left  
+			 0.5f, -0.5f, 0.0f, // right 
+			 0.0f,  0.5f, 0.0f  // top   
+			});
+		v.bind();
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+
 		glfwSwapBuffers(mWindowCtx);
 		glfwPollEvents();
 	}
