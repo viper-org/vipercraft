@@ -1,0 +1,3 @@
+[submodule "ViperGL/deps/glfw"]
+	path = ViperGL/deps/glfw
+	url = https://github.com/glfw/glfw
