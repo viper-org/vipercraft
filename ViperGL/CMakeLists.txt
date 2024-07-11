@@ -2,6 +2,7 @@ cmake_minimum_required (VERSION 3.8)
 
 find_package(OpenGL REQUIRED)
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/deps/glfw)
+add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/deps/glm)
 
 set(SOURCES
 	"source/Window/Window.cpp"
@@ -12,20 +13,28 @@ set(SOURCES
 	"source/Vertex/ElementBuffer.cpp"
 
 	"source/Render/Renderable.cpp"
+	"source/Render/RenderableRect.cpp"
+	"source/Render/RenderQueue.cpp"
 	"source/Render/Rect.cpp"
+	"source/Render/Cam.cpp"
 )
 
 set(HEADERS
 	"include/public/ViperGL/Window/Window.h"
 
-	"include/public/ViperGL/Render/Renderable.h"
+	"include/public/ViperGL/Render/RenderQueue.h"
+	"include/public/ViperGL/Render/Rect.h"
+
+	"include/public/ViperGL/Camera/Camera.h"
+
+	"include/Render/Renderable.h"
+	"include/Render/RenderableRect.h"
+	"include/Render/Cam.h"
 
 	"include/Shader/Shader.h"
 
 	"include/Vertex/VertexObject.h"
 	"include/Vertex/ElementBuffer.h"
-
-	"include/Render/Rect.h"
 )
 
 set(DEP_SOURCES
@@ -42,5 +51,6 @@ target_include_directories(ViperGL PRIVATE include)
 target_compile_definitions(ViperGL PRIVATE SHADER_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
 
 target_link_libraries(ViperGL PUBLIC glfw)
+target_link_libraries(ViperGL PUBLIC glm::glm)
 target_link_libraries(ViperGL PUBLIC OpenGL::GL)
 target_include_directories(ViperGL PUBLIC deps/glad/include)

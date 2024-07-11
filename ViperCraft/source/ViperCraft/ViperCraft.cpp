@@ -5,6 +5,7 @@
 namespace ViperCraft
 {
 	ViperCraft::ViperCraft(ViperCraftErrorCode& errorCode)
+		: mRenderQueue(mCamera)
 	{
 		if (!glfwInit()) // maybe move this to something like ViperGL::StaticInit
 		{
@@ -26,6 +27,10 @@ namespace ViperCraft
 			return;
 		}
 		mWindow.postInit(); // stuff that requires glad to be loaded
+		mRenderQueue.init();
+
+		mRenderQueue.push(ViperGL::Rect(0.f, 0.f, 0.25f, 0.25f));
+		mRenderQueue.push(ViperGL::Rect(-0.25f, -0.25f, 0.f, 0.f));
 
 		errorCode = ViperCraftErrorCode::Success;
 	}
@@ -39,6 +44,10 @@ namespace ViperCraft
 	{
 		while (!mWindow.shouldClose())
 		{
+			double deltaTime = mWindow.getDeltaTime();
+			mCamera.yaw += 5 * deltaTime;
+			mCamera.pitch += 5 * deltaTime;
+
 			processInput();
 
 			mWindow.clear();
@@ -57,6 +66,7 @@ namespace ViperCraft
 
 	void ViperCraft::render()
 	{
+		mRenderQueue.draw();
 	}
 
 	void ViperCraft::postEvents()

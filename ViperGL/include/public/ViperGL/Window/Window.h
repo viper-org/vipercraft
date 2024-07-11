@@ -25,6 +25,8 @@ namespace ViperGL
 		void clear();
 		void mainLoop();
 
+		double getDeltaTime();
+
 		unsigned int getWidth() const;
 		unsigned int getHeight() const;
 		std::string_view getTitle() const;
@@ -37,5 +39,7 @@ namespace ViperGL
 		std::string mTitle;
 
 		GLFWwindow* mWindowCtx;
+
+		double mLastTime; // for deltatime calculation
 	};
 }

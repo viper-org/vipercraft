@@ -1,8 +1,5 @@
 #include <ViperGL/Window/Window.h>
 
-#include <Shader/Shader.h>
-#include <Render/Rect.h>
-
 #include <glad/glad.h>
 
 namespace ViperGL
@@ -30,6 +27,7 @@ namespace ViperGL
 		}
 
 		glfwMakeContextCurrent(mWindowCtx);
+		mLastTime = glfwGetTime();
 
 		errorCode = WindowErrorCode::Success;
 	}
@@ -56,15 +54,16 @@ namespace ViperGL
 
 	void Window::mainLoop()
 	{
-		// this is really bad but its temporary
-		ShaderErrorCode ec;
-		ShaderProgram shader("test", ec);
-		Rect rect(-0.5f, -0.5f, 0.5f, 0.5f, &shader);
-		rect.init();
-		rect.draw();
-
 		glfwSwapBuffers(mWindowCtx);
 		glfwPollEvents();
+	}
+
+	double Window::getDeltaTime()
+	{
+		double currentTime = glfwGetTime();
+		double lastTime = mLastTime;
+		mLastTime = currentTime;
+		return currentTime - lastTime;
 	}
 
 

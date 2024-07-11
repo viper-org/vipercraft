@@ -47,8 +47,8 @@ namespace ViperGL
 		: mName(name)
 		, mId(0)
 	{
-		std::filesystem::path vertPath = std::filesystem::path(SHADER_SOURCE_DIR) / "shader" / ("vert-" + name);
-		std::filesystem::path fragPath = std::filesystem::path(SHADER_SOURCE_DIR) / "shader" / ("frag-" + name);
+		std::filesystem::path vertPath = std::filesystem::path(SHADER_SOURCE_DIR) / "shader" / (name + ".vert");
+		std::filesystem::path fragPath = std::filesystem::path(SHADER_SOURCE_DIR) / "shader" / (name + ".frag");
 
 		std::ifstream vertFile(vertPath);
 		std::ifstream fragFile(fragPath);
@@ -88,5 +88,10 @@ namespace ViperGL
 	void ShaderProgram::use()
 	{
 		glUseProgram(mId);
+	}
+
+	unsigned int ShaderProgram::getId() const
+	{
+		return mId;
 	}
 }

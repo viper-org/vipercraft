@@ -1,4 +1,4 @@
-#include <ViperGL/Render/Renderable.h>
+#include <Render/Renderable.h>
 
 #include <glad/glad.h>
 

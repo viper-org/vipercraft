@@ -1,6 +1,8 @@
 #pragma once
 
 #include <ViperGL/Window/Window.h>
+#include <ViperGL/Render/RenderQueue.h>
+#include <ViperGL/Camera/Camera.h>
 
 namespace ViperCraft
 {
@@ -22,6 +24,8 @@ namespace ViperCraft
 
 	private:
 		ViperGL::Window mWindow;
+		ViperGL::RenderQueue mRenderQueue;
+		ViperGL::Camera mCamera;
 
 		void processInput();
 		void render();
