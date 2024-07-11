@@ -13,6 +13,8 @@ namespace ViperGL
 		void bind();
 
 	private:
+		std::initializer_list<float> mVertices;
+
 		unsigned int mVBO;
 		unsigned int mVAO;
 	};

@@ -2,6 +2,7 @@
 
 #include <Shader/Shader.h>
 #include <Vertex/VertexObject.h>
+#include <Vertex/ElementBuffer.h>
 
 #include <glad/glad.h>
 
@@ -39,6 +40,7 @@ namespace ViperGL
 		int fWidth, fHeight;
 		glfwGetFramebufferSize(mWindowCtx, &fWidth, &fHeight);
 		glViewport(0, 0, fWidth, fHeight);
+		glEnable(GL_DEPTH_TEST);
 	}
 
 
@@ -50,7 +52,7 @@ namespace ViperGL
 	void Window::clear()
 	{
 		glClearColor(1.f, 0.f, 1.f, 1.f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
 	void Window::mainLoop()
@@ -60,12 +62,17 @@ namespace ViperGL
 		ShaderProgram shader("test", ec);
 		shader.use();
 		VertexObject v({
-			-0.5f, -0.5f, 0.0f, // left  
-			 0.5f, -0.5f, 0.0f, // right 
-			 0.0f,  0.5f, 0.0f  // top   
+			 0.5f,  0.5f, 0.0f,  // top right
+			 0.5f, -0.5f, 0.0f,  // bottom right
+			-0.5f, -0.5f, 0.0f,  // bottom left
+			-0.5f,  0.5f, 0.0f   // top left  
+		});
+		ElementBuffer e({
+			0, 1, 3,
+			1, 2, 3
 			});
 		v.bind();
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		glfwSwapBuffers(mWindowCtx);
 		glfwPollEvents();

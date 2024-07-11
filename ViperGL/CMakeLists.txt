@@ -6,12 +6,12 @@ add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/deps/glfw)
 set(SOURCES
 	"source/Window/Window.cpp"
 	"source/Shader/Shader.cpp"
- "source/Vertex/VertexObject.cpp")
+ "source/Vertex/VertexObject.cpp" "source/Vertex/ElementBuffer.cpp")
 
 set(HEADERS
 	"include/public/ViperGL/Window/Window.h"
 	"include/Shader/Shader.h"
- "include/Vertex/VertexObject.h")
+ "include/Vertex/VertexObject.h" "include/Vertex/ElementBuffer.h")
 
 set(DEP_SOURCES
 	"deps/glad/src/glad.c"

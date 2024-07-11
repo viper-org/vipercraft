@@ -2,11 +2,14 @@
 
 #include <glad/glad.h>
 
+#include <utility>
+
 namespace ViperGL
 {
 	VertexObject::VertexObject(std::initializer_list<float> vertices)
 		: mVBO(0)
 		, mVAO(0)
+		, mVertices(std::move(vertices))
 	{
 		glGenVertexArrays(1, &mVAO);
 		glGenBuffers(1, &mVBO);
@@ -14,11 +17,10 @@ namespace ViperGL
 		glBindVertexArray(mVAO);
 
 		glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(*vertices.begin()), vertices.begin(), GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, mVertices.size() * sizeof(*mVertices.begin()), mVertices.begin(), GL_STATIC_DRAW);
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(*vertices.begin()), nullptr);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(*mVertices.begin()), nullptr);
 		glEnableVertexAttribArray(0);
-
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
