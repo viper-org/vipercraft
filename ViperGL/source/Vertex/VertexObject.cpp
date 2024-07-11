@@ -6,6 +6,12 @@
 
 namespace ViperGL
 {
+	VertexObject::VertexObject()
+		: mVBO(0)
+		, mVAO(0)
+	{
+	}
+
 	VertexObject::VertexObject(std::initializer_list<float> vertices)
 		: mVBO(0)
 		, mVAO(0)

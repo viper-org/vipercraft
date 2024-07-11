@@ -7,6 +7,7 @@ namespace ViperGL
 	class VertexObject
 	{
 	public:
+		VertexObject();
 		VertexObject(std::initializer_list<float> vertices);
 		~VertexObject();
 

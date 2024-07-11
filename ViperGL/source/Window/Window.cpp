@@ -1,8 +1,7 @@
 #include <ViperGL/Window/Window.h>
 
 #include <Shader/Shader.h>
-#include <Vertex/VertexObject.h>
-#include <Vertex/ElementBuffer.h>
+#include <Render/Rect.h>
 
 #include <glad/glad.h>
 
@@ -60,19 +59,9 @@ namespace ViperGL
 		// this is really bad but its temporary
 		ShaderErrorCode ec;
 		ShaderProgram shader("test", ec);
-		shader.use();
-		VertexObject v({
-			 0.5f,  0.5f, 0.0f,  // top right
-			 0.5f, -0.5f, 0.0f,  // bottom right
-			-0.5f, -0.5f, 0.0f,  // bottom left
-			-0.5f,  0.5f, 0.0f   // top left  
-		});
-		ElementBuffer e({
-			0, 1, 3,
-			1, 2, 3
-			});
-		v.bind();
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		Rect rect(-0.5f, -0.5f, 0.5f, 0.5f, &shader);
+		rect.init();
+		rect.draw();
 
 		glfwSwapBuffers(mWindowCtx);
 		glfwPollEvents();
