@@ -29,7 +29,7 @@ namespace ViperCraft
 		mWindow.postInit(); // stuff that requires glad to be loaded
 		mRenderQueue.init();
 
-		mRenderQueue.push(ViperGL::Voxel(0.5f, 0.5f, -1.f, "cobblestone"));
+		mRenderQueue.push(ViperGL::Voxel(0.f, 0.f, 0.f, "cobblestone"));
 
 		errorCode = ViperCraftErrorCode::Success;
 	}
@@ -44,8 +44,7 @@ namespace ViperCraft
 		while (!mWindow.shouldClose())
 		{
 			double deltaTime = mWindow.getDeltaTime();
-			mCamera.yaw += 5 * deltaTime;
-			mCamera.pitch += 5 * deltaTime;
+			mCamera.position.x -= deltaTime;
 
 			processInput();
 

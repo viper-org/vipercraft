@@ -9,7 +9,7 @@ namespace ViperGL
 	public:
 		Cam(unsigned int shaderId);
 
-		void updateMatrices(float pitch, float yaw);
+		void updateMatrices(float pitch, float yaw, float x, float y, float z);
 
 	private:
 		glm::mat4 mProj;

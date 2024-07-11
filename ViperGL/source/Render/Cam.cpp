@@ -26,14 +26,21 @@ namespace ViperGL
 		mProj = glm::perspective(glm::radians(45.0f), 1920.f / 1080.f, 0.1f, 100.0f); // TODO: Render distance and proper aspect ratio
 	}
 
-	void Cam::updateMatrices(float pitch, float yaw)
+	void Cam::updateMatrices(float pitch, float yaw, float x, float y, float z)
 	{
+		mPosition = glm::vec3(x, y, z);
+
 		// set direction based on pitch and yaw
 		glm::vec3 direction;
 		direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
 		direction.y = sin(glm::radians(pitch));
 		direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
 		mFront = glm::normalize(direction);
+
+		// Set direction vectors and view
+		mBackward = glm::normalize(mPosition - mTarget);
+		mRight = glm::normalize(glm::cross(glm::vec3(0.f, 1.f, 0.f), mBackward));
+		mUp = glm::cross(mBackward, mRight);
 
 		mView = glm::lookAt(mPosition, mPosition + mFront, mUp);
 

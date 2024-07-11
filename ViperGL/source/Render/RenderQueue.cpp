@@ -41,7 +41,7 @@ namespace ViperGL
 	{
 		mCamera.pitch = fmodf(mCamera.pitch, 360.f);
 		mCamera.yaw = fmodf(mCamera.yaw, 360.f);
-		mCam->updateMatrices(mCamera.pitch, mCamera.yaw);
+		mCam->updateMatrices(mCamera.pitch, mCamera.yaw, mCamera.position.x, mCamera.position.y, mCamera.position.z);
 		for (auto& r : mRenderables)
 		{
 			r->draw();
