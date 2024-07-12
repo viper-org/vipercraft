@@ -1,13 +1,18 @@
 ﻿#include <ViperCraft/ViperCraft.h>
 
+#include <Game/Block/Tile.h>
+
 #include <Input/Input.h>
 
 #include <glad/glad.h>
 
 namespace ViperCraft
 {
+	constexpr int CHUNK_COUNT = 4;
+
 	ViperCraft::ViperCraft(ViperCraftErrorCode& errorCode)
 		: mRenderQueue(mCamera)
+		, mChunks(std::make_unique<Chunk[]>(CHUNK_COUNT))
 	{
 		if (!glfwInit()) // maybe move this to something like ViperGL::StaticInit
 		{
@@ -34,7 +39,20 @@ namespace ViperCraft
 		Input::InitInputManager(&mWindow);
 		Input::SetCursorLocked(true);
 
-		mRenderQueue.push(ViperGL::Voxel(0.f, 0.f, 0.f, "cobblestone"));
+		Tile::BuildRenderables(mRenderQueue);
+		glm::vec3 chunkPos = glm::vec3(0.f);
+		for (int i = 0; i < CHUNK_COUNT; ++i)
+		{
+			mChunks[i].mPosition = chunkPos;
+			chunkPos.x += 16;
+		}
+		for (int i = 0; i < 16; ++i)
+		{
+			for (int j = 0; j < 16; ++j)
+			{
+				mChunks[0].getTile(glm::vec3(i, 0, j)) = Tile::GetTile("cobblestone");
+			}
+		}
 
 		errorCode = ViperCraftErrorCode::Success;
 	}
@@ -92,7 +110,11 @@ namespace ViperCraft
 
 	void ViperCraft::render()
 	{
-		mRenderQueue.draw();
+		mRenderQueue.prepareDraw();
+		for (int i = 0; i < CHUNK_COUNT; ++i)
+		{
+			mChunks[i].drawAll(mRenderQueue);
+		}
 	}
 
 	void ViperCraft::postEvents(double deltaTime)

@@ -22,10 +22,11 @@ namespace ViperGL
 
 		void init();
 
-		void push(const Rect& rect);
-		void push(const Voxel& voxel);
+		int push(const Rect& rect);
+		int push(const Voxel& voxel);
 
-		void draw();
+		void prepareDraw();
+		void drawRenderable(int id, glm::vec3 position);
 
 	private:
 		std::vector<std::unique_ptr<Renderable> > mRenderables;

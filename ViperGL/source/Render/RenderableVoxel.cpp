@@ -2,19 +2,17 @@
 
 namespace ViperGL
 {
-	RenderableVoxel::RenderableVoxel(float x, float y, float z, ShaderProgram* shader, Texture texture)
-		: x(x)
-		, y(y)
-		, z(z)
-		, mTex(texture)
+	RenderableVoxel::RenderableVoxel(ShaderProgram* shader, Texture texture)
+		: mTex(texture)
 	{
 		mShaderProgram = shader;
-		mPosition = glm::vec3(x, y, z);
 		mTexture = &mTex;
 	}
 
-	void RenderableVoxel::init()
+	void RenderableVoxel::init(int id)
 	{
+		mId = id;
+
 		mVO.~VertexObject();
 		new (&mVO) VertexObject({
 			 -0.5f, -0.5f, 0.5f, 0, 0,

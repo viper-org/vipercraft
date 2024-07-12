@@ -8,13 +8,9 @@ namespace ViperGL
 	{
 	friend class RenderQueue;
 	public:
-		Voxel(float x, float y, float z, std::string textureName);
+		Voxel(std::string_view textureName);
 
 	private:
-		float mX;
-		float mY;
-		float mZ;
-
 		std::string mTextureName;
 	};
 }

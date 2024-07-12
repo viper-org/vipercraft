@@ -14,9 +14,11 @@ namespace ViperGL
 	class Renderable
 	{
 	public:
-		virtual void init() = 0;
+		virtual void init(int id) = 0;
 
-		void draw();
+		void drawAt(glm::vec3 position);
+
+		int getId() const;
 		
 	protected:
 		VertexObject mVO;
@@ -24,6 +26,6 @@ namespace ViperGL
 		ShaderProgram* mShaderProgram{ nullptr };
 		Texture* mTexture{ nullptr };
 
-		glm::vec3 mPosition{ 0.f, 1.f, 0.f };
+		int mId;
 	};
 }

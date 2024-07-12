@@ -26,27 +26,31 @@ namespace ViperGL
 		mCam = std::make_unique<Cam>(mCamera, mMainShader->getId());
 	}
 
-	void RenderQueue::push(const Rect& rect)
+	static int lastRenderableID = 0;
+	int RenderQueue::push(const Rect& rect)
 	{
-		mRenderables.push_back(std::make_unique<RenderableRect>(rect.x, rect.y, mMainShader.get()));
-		mRenderables.back()->init();
+		mRenderables.push_back(std::make_unique<RenderableRect>(mMainShader.get()));
+		mRenderables.back()->init(lastRenderableID);
+		return lastRenderableID++;
 	}
 
-	void RenderQueue::push(const Voxel& voxel)
+	int RenderQueue::push(const Voxel& voxel)
 	{
-		mRenderables.push_back(std::make_unique<RenderableVoxel>(voxel.mX, voxel.mY, voxel.mZ, mMainShader.get(), Texture(voxel.mTextureName)));
-		mRenderables.back()->init();
+		mRenderables.push_back(std::make_unique<RenderableVoxel>(mMainShader.get(), Texture(voxel.mTextureName)));
+		mRenderables.back()->init(lastRenderableID);
+		return lastRenderableID++;
 	}
 
-	void RenderQueue::draw()
+	void RenderQueue::prepareDraw()
 	{
 		mCamera.updateVectors();
 
 		mCamera.yaw = fmodf(mCamera.yaw, 360.f);
 		mCam->updateMatrices();
-		for (auto& r : mRenderables)
-		{
-			r->draw();
-		}
+	}
+
+	void RenderQueue::drawRenderable(int id, glm::vec3 position)
+	{
+		mRenderables[id]->drawAt(position);
 	}
 }

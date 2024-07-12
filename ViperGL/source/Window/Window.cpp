@@ -38,6 +38,7 @@ namespace ViperGL
 		glfwGetFramebufferSize(mWindowCtx, &fWidth, &fHeight);
 		glViewport(0, 0, fWidth, fHeight);
 		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_CULL_FACE);
 	}
 
 

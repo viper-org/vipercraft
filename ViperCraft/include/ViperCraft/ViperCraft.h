@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Game/Block/Chunk.h>
+
 #include <ViperGL/Window/Window.h>
 #include <ViperGL/Render/RenderQueue.h>
 #include <ViperGL/Camera/Camera.h>
@@ -26,6 +28,8 @@ namespace ViperCraft
 		ViperGL::Window mWindow;
 		ViperGL::RenderQueue mRenderQueue;
 		ViperGL::Camera mCamera;
+
+		std::unique_ptr<Chunk[]> mChunks; // TODO: Move this into a world class
 
 		void processInput(double deltaTime);
 		void render();

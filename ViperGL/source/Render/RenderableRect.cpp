@@ -2,17 +2,16 @@
 
 namespace ViperGL
 {
-	RenderableRect::RenderableRect(float x, float y, ShaderProgram* shader)
-		: x(x)
-		, y(y)
+	RenderableRect::RenderableRect(ShaderProgram* shader)
 	{
 		mShaderProgram = shader;
-		mPosition = glm::vec3(x, y, 0.f);
 	}
 
-	void RenderableRect::init()
+	void RenderableRect::init(int id)
 	{
-		mVO.~VertexObject();
+		mId = id;
+
+		mVO.~VertexObject(); // TODO: add texture coordinates
 		new (&mVO) VertexObject({
 			 0.5f,  0.5f, 0.f,
 			 0.5f, -0.5f, 0.f,

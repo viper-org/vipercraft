@@ -6,6 +6,7 @@ add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/deps/glm)
 
 set(SOURCES
 	"source/Window/Window.cpp"
+	"source/Window/Input.cpp"
 
 	"source/Shader/Shader.cpp"
 
@@ -21,10 +22,11 @@ set(SOURCES
 	"source/Render/Rect.cpp"
 	"source/Render/Voxel.cpp"
 	"source/Render/Cam.cpp"
- "source/Window/Input.cpp")
+)
 
 set(HEADERS
 	"include/public/ViperGL/Window/Window.h"
+	"include/public/ViperGL/Window/Input.h"
 
 	"include/public/ViperGL/Render/RenderQueue.h"
 	"include/public/ViperGL/Render/Rect.h"
@@ -43,7 +45,7 @@ set(HEADERS
 
 	"include/Vertex/VertexObject.h"
 	"include/Vertex/ElementBuffer.h"
- "include/public/ViperGL/Window/Input.h")
+)
 
 set(DEP_SOURCES
 	"deps/glad/src/glad.c"

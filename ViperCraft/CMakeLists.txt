@@ -4,11 +4,21 @@ set(SOURCES
 	"source/main.cpp"
 
 	"source/ViperCraft/ViperCraft.cpp"
- "source/Input/Input.cpp")
+
+	"source/Input/Input.cpp"
+
+	"source/Game/Block/Tile.cpp"
+	"source/Game/Block/Chunk.cpp"
+)
 
 set(HEADERS
 	"include/ViperCraft/ViperCraft.h"
- "include/Input/Input.h")
+
+	"include/Input/Input.h"
+	
+	"include/Game/Block/Tile.h"
+	"include/Game/Block/Chunk.h"
+)
 
 source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${SOURCES} ${HEADERS})
 

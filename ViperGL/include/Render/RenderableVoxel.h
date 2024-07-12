@@ -7,14 +7,10 @@ namespace ViperGL
 	class RenderableVoxel : public Renderable
 	{
 	public:
-		RenderableVoxel(float x, float y, float z, ShaderProgram* shader, Texture texture);
-		virtual void init() override;
+		RenderableVoxel(ShaderProgram* shader, Texture texture);
+		virtual void init(int id) override;
 
 	private:
-		float x;
-		float y;
-		float z;
-
 		Texture mTex;
 	};
 }
