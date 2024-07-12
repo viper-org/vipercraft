@@ -7,6 +7,7 @@ namespace ViperCraft
 	std::unordered_map<std::string_view, Tile> tiles = {
 		{ "air", Tile(-1, "air", "air")},
 		{ "cobblestone", Tile(-1, "cobblestone", "cobblestone")},
+		{ "dirt", Tile(-1, "dirt", "dirt")},
 	};
 
 	Tile::Tile()

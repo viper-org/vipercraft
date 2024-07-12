@@ -46,11 +46,15 @@ namespace ViperCraft
 			mChunks[i].mPosition = chunkPos;
 			chunkPos.x += 16;
 		}
+		// just make a simple grid pattern for now
 		for (int i = 0; i < 16; ++i)
 		{
 			for (int j = 0; j < 16; ++j)
 			{
-				mChunks[0].getTile(glm::vec3(i, 0, j)) = Tile::GetTile("cobblestone");
+				if ((i+j%2) % 2 == 0)
+					mChunks[0].getTile(glm::vec3(i, 0, j)) = Tile::GetTile("dirt");
+				else
+					mChunks[0].getTile(glm::vec3(i, 0, j)) = Tile::GetTile("cobblestone");
 			}
 		}
 
