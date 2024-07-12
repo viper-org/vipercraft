@@ -4,11 +4,11 @@ set(SOURCES
 	"source/main.cpp"
 
 	"source/ViperCraft/ViperCraft.cpp"
-)
+ "source/Input/Input.cpp")
 
 set(HEADERS
 	"include/ViperCraft/ViperCraft.h"
-)
+ "include/Input/Input.h")
 
 source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${SOURCES} ${HEADERS})
 

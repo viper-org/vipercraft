@@ -27,8 +27,8 @@ namespace ViperCraft
 		ViperGL::RenderQueue mRenderQueue;
 		ViperGL::Camera mCamera;
 
-		void processInput();
+		void processInput(double deltaTime);
 		void render();
-		void postEvents();
+		void postEvents(double deltaTime);
 	};
 }

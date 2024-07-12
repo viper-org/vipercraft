@@ -12,6 +12,7 @@ namespace ViperGL
 	RenderQueue::RenderQueue(Camera& camera)
 		: mCamera(camera)
 	{
+		mCamera.updateVectors();
 	}
 
 	RenderQueue::~RenderQueue()
@@ -22,7 +23,7 @@ namespace ViperGL
 	{
 		ShaderErrorCode ec;
 		mMainShader = std::make_unique<ShaderProgram>("main", ec); // TODO: check error code and return another if failed
-		mCam = std::make_unique<Cam>(mMainShader->getId());
+		mCam = std::make_unique<Cam>(mCamera, mMainShader->getId());
 	}
 
 	void RenderQueue::push(const Rect& rect)
@@ -39,9 +40,10 @@ namespace ViperGL
 
 	void RenderQueue::draw()
 	{
-		mCamera.pitch = fmodf(mCamera.pitch, 360.f);
+		mCamera.updateVectors();
+
 		mCamera.yaw = fmodf(mCamera.yaw, 360.f);
-		mCam->updateMatrices(mCamera.pitch, mCamera.yaw, mCamera.position.x, mCamera.position.y, mCamera.position.z);
+		mCam->updateMatrices();
 		for (auto& r : mRenderables)
 		{
 			r->draw();

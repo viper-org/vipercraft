@@ -9,15 +9,19 @@ set(SOURCES
 
 	"source/Shader/Shader.cpp"
 
+	"source/Texture/Texture.cpp"
+
 	"source/Vertex/VertexObject.cpp"
 	"source/Vertex/ElementBuffer.cpp"
 
 	"source/Render/Renderable.cpp"
 	"source/Render/RenderableRect.cpp"
+	"source/Render/RenderableVoxel.cpp"
 	"source/Render/RenderQueue.cpp"
 	"source/Render/Rect.cpp"
+	"source/Render/Voxel.cpp"
 	"source/Render/Cam.cpp"
- "source/Render/Voxel.cpp" "source/Render/RenderableVoxel.cpp" "source/Texture/Texture.cpp")
+ "source/Window/Input.cpp")
 
 set(HEADERS
 	"include/public/ViperGL/Window/Window.h"
@@ -35,9 +39,11 @@ set(HEADERS
 
 	"include/Shader/Shader.h"
 
+	"include/Texture/Texture.h"
+
 	"include/Vertex/VertexObject.h"
 	"include/Vertex/ElementBuffer.h"
- "include/Texture/Texture.h")
+ "include/public/ViperGL/Window/Input.h")
 
 set(DEP_SOURCES
 	"deps/glad/src/glad.c"

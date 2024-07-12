@@ -1,5 +1,7 @@
 ﻿#include <ViperCraft/ViperCraft.h>
 
+#include <Input/Input.h>
+
 #include <glad/glad.h>
 
 namespace ViperCraft
@@ -29,6 +31,9 @@ namespace ViperCraft
 		mWindow.postInit(); // stuff that requires glad to be loaded
 		mRenderQueue.init();
 
+		Input::InitInputManager(&mWindow);
+		Input::SetCursorLocked(true);
+
 		mRenderQueue.push(ViperGL::Voxel(0.f, 0.f, 0.f, "cobblestone"));
 
 		errorCode = ViperCraftErrorCode::Success;
@@ -44,22 +49,45 @@ namespace ViperCraft
 		while (!mWindow.shouldClose())
 		{
 			double deltaTime = mWindow.getDeltaTime();
-			mCamera.position.x -= deltaTime;
 
-			processInput();
+			processInput(deltaTime);
 
 			mWindow.clear();
 			render();
 
-			postEvents();
+			postEvents(deltaTime);
 
 			mWindow.mainLoop();
 		}
 	}
 
 
-	void ViperCraft::processInput()
+	void ViperCraft::processInput(double deltaTime)
 	{
+		glm::vec3 move = glm::vec3(0.f);
+		constexpr float MOVE_SPEED = 2.5f;
+		if (Input::GetButtonDown(Input::Key::A))
+		{
+			move -= mCamera.right * (float)(MOVE_SPEED * deltaTime);
+		}
+		if (Input::GetButtonDown(Input::Key::D))
+		{
+			move += mCamera.right * (float)(MOVE_SPEED * deltaTime);
+		}
+		if (Input::GetButtonDown(Input::Key::W))
+		{
+			move += mCamera.forward * (float)(MOVE_SPEED * deltaTime);
+		}
+		if (Input::GetButtonDown(Input::Key::S))
+		{
+			move -= mCamera.forward * (float)(MOVE_SPEED * deltaTime);
+		}
+		mCamera.position += move;
+
+		mCamera.yaw += Input::GetInputAxis(Input::InputAxis::AxisX);
+		mCamera.pitch += Input::GetInputAxis(Input::InputAxis::AxisY);
+
+		mCamera.pitch = glm::clamp(mCamera.pitch, -89.9f, 89.9f);
 	}
 
 	void ViperCraft::render()
@@ -67,7 +95,7 @@ namespace ViperCraft
 		mRenderQueue.draw();
 	}
 
-	void ViperCraft::postEvents()
+	void ViperCraft::postEvents(double deltaTime)
 	{
 	}
 }
