@@ -9,7 +9,7 @@
 namespace ViperCraft
 {
 	ViperCraft::ViperCraft(ViperCraftErrorCode& errorCode)
-		: mRenderQueue(mCamera)
+		: mRenderQueue(mPlayer.getPlayerController().getCamera())
 	{
 		if (!glfwInit()) // maybe move this to something like ViperGL::StaticInit
 		{
@@ -50,8 +50,6 @@ namespace ViperCraft
 		{
 			double deltaTime = mWindow.getDeltaTime();
 
-			processInput(deltaTime);
-
 			mWindow.clear();
 			render();
 
@@ -74,39 +72,16 @@ namespace ViperCraft
 		return instance.get();
 	}
 
+	void ViperCraft::onTick(std::function<void(double)> handler)
+	{
+		mOnTickHandlers.push_back(std::move(handler));
+	}
+
 	ViperGL::RenderQueue* ViperCraft::getRenderQueue()
 	{
 		return &mRenderQueue;
 	}
 
-
-	void ViperCraft::processInput(double deltaTime)
-	{
-		glm::vec3 move = glm::vec3(0.f);
-		constexpr float MOVE_SPEED = 5.f;
-		if (Input::GetButtonDown(Input::Key::A))
-		{
-			move -= mCamera.right * (float)(MOVE_SPEED * deltaTime);
-		}
-		if (Input::GetButtonDown(Input::Key::D))
-		{
-			move += mCamera.right * (float)(MOVE_SPEED * deltaTime);
-		}
-		if (Input::GetButtonDown(Input::Key::W))
-		{
-			move += mCamera.forward * (float)(MOVE_SPEED * deltaTime);
-		}
-		if (Input::GetButtonDown(Input::Key::S))
-		{
-			move -= mCamera.forward * (float)(MOVE_SPEED * deltaTime);
-		}
-		mCamera.position += move;
-
-		mCamera.yaw += Input::GetInputAxis(Input::InputAxis::AxisX);
-		mCamera.pitch += Input::GetInputAxis(Input::InputAxis::AxisY);
-
-		mCamera.pitch = glm::clamp(mCamera.pitch, -89.9f, 89.9f);
-	}
 
 	void ViperCraft::render()
 	{
@@ -115,11 +90,16 @@ namespace ViperCraft
 
 	void ViperCraft::postEvents(double deltaTime)
 	{
+		for (auto& handler : mOnTickHandlers)
+		{
+			handler(deltaTime);
+		}
 	}
 
 
 	void ViperCraft::initGame()
 	{
 		World::Generate(mWorld);
+		mPlayer.init();
 	}
 }

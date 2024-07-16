@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Game/Player/Player.h>
+
 #include <Game/World/World.h>
 
 #include <ViperGL/Window/Window.h>
@@ -27,18 +29,21 @@ namespace ViperCraft
 		static void CreateGame(ViperCraftErrorCode& errorCode);
 		static ViperCraft* GetInstance();
 
+		void onTick(std::function<void(double)> handler);
+
 		ViperGL::RenderQueue* getRenderQueue();
 
 	private:
 		ViperGL::Window mWindow;
 		ViperGL::RenderQueue mRenderQueue;
-		ViperGL::Camera mCamera;
+
+		std::vector<std::function<void(double)> > mOnTickHandlers;
 
 		World mWorld;
+		Player mPlayer;
 
 		void initGame();
 
-		void processInput(double deltaTime);
 		void render();
 		void postEvents(double deltaTime);
 	};
