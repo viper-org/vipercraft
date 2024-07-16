@@ -10,16 +10,16 @@ namespace ViperCraft
 	{
 	public:
 		Tile();
-		Tile(int renderableId, std::string_view textureId, std::string name);
+		Tile(ViperGL::TextureCoords texture, std::string name);
 
-		int getRenderableId() const;
+		void draw(int renderBuffer, glm::vec3 position, ViperGL::RenderQueue* renderQueue);
+
+		std::string_view getName() const;
 
 		static Tile* GetTile(std::string_view name);
-		static void BuildRenderables(ViperGL::RenderQueue& renderQueue);
 
 	private:
-		int mRenderableId;
-		std::string_view mTextureId;
+		ViperGL::TextureCoords mTexture;
 		std::string mName;
 	};
 }

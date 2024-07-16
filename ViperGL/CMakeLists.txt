@@ -15,12 +15,12 @@ set(SOURCES
 	"source/Vertex/VertexObject.cpp"
 	"source/Vertex/ElementBuffer.cpp"
 
-	"source/Render/Renderable.cpp"
-	"source/Render/RenderableRect.cpp"
-	"source/Render/RenderableVoxel.cpp"
+	
+	
+	
 	"source/Render/RenderQueue.cpp"
-	"source/Render/Rect.cpp"
-	"source/Render/Voxel.cpp"
+	
+	
 	"source/Render/Cam.cpp"
 )
 
@@ -29,14 +29,14 @@ set(HEADERS
 	"include/public/ViperGL/Window/Input.h"
 
 	"include/public/ViperGL/Render/RenderQueue.h"
-	"include/public/ViperGL/Render/Rect.h"
-	"include/public/ViperGL/Render/Voxel.h"
+	
+	
 
 	"include/public/ViperGL/Camera/Camera.h"
 
-	"include/Render/Renderable.h"
-	"include/Render/RenderableRect.h"
-	"include/Render/RenderableVoxel.h"
+	
+	
+	
 	"include/Render/Cam.h"
 
 	"include/Shader/Shader.h"

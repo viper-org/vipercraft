@@ -9,8 +9,9 @@
 
 namespace ViperGL
 {
-	Texture::Texture(const std::string& name)
+	TextureAtlas::TextureAtlas(const std::string& name)
 		: mId(0)
+		, mTextureGridSize(2, 1)
 	{
 		std::filesystem::path texturePath = std::filesystem::path(SHADER_SOURCE_DIR) / "texture" / (name + ".png");
 
@@ -20,11 +21,9 @@ namespace ViperGL
 		glGenTextures(1, &mId);
 		glBindTexture(GL_TEXTURE_2D, mId);
 
-		// set the texture wrapping parameters
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		// set texture filtering parameters
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 		if (nrChannels == 3)
@@ -32,18 +31,24 @@ namespace ViperGL
 		else if (nrChannels == 4)
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 		// TODO: Error if other value
+
 		glGenerateMipmap(GL_TEXTURE_2D);
 
 		stbi_image_free(data);
 	}
 
-	void Texture::bind()
+	void TextureAtlas::bind()
 	{
 		glBindTexture(GL_TEXTURE_2D, mId);
 	}
 
-	unsigned int Texture::getId() const
+	unsigned int TextureAtlas::getId() const
 	{
 		return mId;
+	}
+
+	glm::vec2 TextureAtlas::getTextureGridSize() const
+	{
+		return mTextureGridSize;
 	}
 }

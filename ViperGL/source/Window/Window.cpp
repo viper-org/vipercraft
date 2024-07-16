@@ -2,6 +2,8 @@
 
 #include <glad/glad.h>
 
+#include <stb_image.h>
+
 namespace ViperGL
 {
 	Window::Window()
@@ -29,6 +31,8 @@ namespace ViperGL
 		glfwMakeContextCurrent(mWindowCtx);
 		mLastTime = glfwGetTime();
 
+		stbi_set_flip_vertically_on_load(true);
+
 		errorCode = WindowErrorCode::Success;
 	}
 
@@ -39,6 +43,7 @@ namespace ViperGL
 		glViewport(0, 0, fWidth, fHeight);
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
+		glClearColor(1.f, 0.f, 1.f, 1.f);
 	}
 
 
@@ -49,7 +54,6 @@ namespace ViperGL
 
 	void Window::clear()
 	{
-		glClearColor(1.f, 0.f, 1.f, 1.f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
@@ -57,6 +61,7 @@ namespace ViperGL
 	{
 		glfwSwapBuffers(mWindowCtx);
 		glfwPollEvents();
+		glFlush();
 	}
 
 	double Window::getDeltaTime()

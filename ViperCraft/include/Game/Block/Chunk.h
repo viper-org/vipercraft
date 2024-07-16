@@ -11,16 +11,21 @@ namespace ViperCraft
 	class Chunk
 	{
 	friend class ViperCraft;
+	friend class World;
 	public:
 		Chunk();
 		Chunk(glm::vec3 position);
 
-		Tile*& getTile(glm::vec3 position);
+		void beginRendering();
 
-		void drawAll(ViperGL::RenderQueue& renderQueue);
+		Tile*& getTile(glm::vec3 position);
 
 	private:
 		Tile* mTiles[16][256][16]; // x, y, z
 		glm::vec3 mPosition; // bottom left back side
+
+		int mRenderBuffer;
+
+		void chunkUpdated();
 	};
 }

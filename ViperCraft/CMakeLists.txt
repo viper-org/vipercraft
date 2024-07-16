@@ -9,7 +9,7 @@ set(SOURCES
 
 	"source/Game/Block/Tile.cpp"
 	"source/Game/Block/Chunk.cpp"
-)
+ "source/Game/World/World.cpp")
 
 set(HEADERS
 	"include/ViperCraft/ViperCraft.h"
@@ -18,7 +18,7 @@ set(HEADERS
 	
 	"include/Game/Block/Tile.h"
 	"include/Game/Block/Chunk.h"
-)
+ "include/Game/World/World.h")
 
 source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${SOURCES} ${HEADERS})
 

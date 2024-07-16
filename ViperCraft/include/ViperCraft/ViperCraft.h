@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Game/Block/Chunk.h>
+#include <Game/World/World.h>
 
 #include <ViperGL/Window/Window.h>
 #include <ViperGL/Render/RenderQueue.h>
@@ -24,12 +24,19 @@ namespace ViperCraft
 
 		void run();
 
+		static void CreateGame(ViperCraftErrorCode& errorCode);
+		static ViperCraft* GetInstance();
+
+		ViperGL::RenderQueue* getRenderQueue();
+
 	private:
 		ViperGL::Window mWindow;
 		ViperGL::RenderQueue mRenderQueue;
 		ViperGL::Camera mCamera;
 
-		std::unique_ptr<Chunk[]> mChunks; // TODO: Move this into a world class
+		World mWorld;
+
+		void initGame();
 
 		void processInput(double deltaTime);
 		void render();

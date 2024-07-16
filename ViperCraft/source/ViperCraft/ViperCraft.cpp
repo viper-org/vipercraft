@@ -8,11 +8,8 @@
 
 namespace ViperCraft
 {
-	constexpr int CHUNK_COUNT = 4;
-
 	ViperCraft::ViperCraft(ViperCraftErrorCode& errorCode)
 		: mRenderQueue(mCamera)
-		, mChunks(std::make_unique<Chunk[]>(CHUNK_COUNT))
 	{
 		if (!glfwInit()) // maybe move this to something like ViperGL::StaticInit
 		{
@@ -34,29 +31,10 @@ namespace ViperCraft
 			return;
 		}
 		mWindow.postInit(); // stuff that requires glad to be loaded
-		mRenderQueue.init();
+		mRenderQueue.init("atlas");
 
 		Input::InitInputManager(&mWindow);
 		Input::SetCursorLocked(true);
-
-		Tile::BuildRenderables(mRenderQueue);
-		glm::vec3 chunkPos = glm::vec3(0.f);
-		for (int i = 0; i < CHUNK_COUNT; ++i)
-		{
-			mChunks[i].mPosition = chunkPos;
-			chunkPos.x += 16;
-		}
-		// just make a simple grid pattern for now
-		for (int i = 0; i < 16; ++i)
-		{
-			for (int j = 0; j < 16; ++j)
-			{
-				if ((i+j%2) % 2 == 0)
-					mChunks[0].getTile(glm::vec3(i, 0, j)) = Tile::GetTile("dirt");
-				else
-					mChunks[0].getTile(glm::vec3(i, 0, j)) = Tile::GetTile("cobblestone");
-			}
-		}
 
 		errorCode = ViperCraftErrorCode::Success;
 	}
@@ -83,11 +61,29 @@ namespace ViperCraft
 		}
 	}
 
+	static std::unique_ptr<ViperCraft> instance;
+	void ViperCraft::CreateGame(ViperCraftErrorCode& errorCode)
+	{
+		if (instance); // TODO: Error
+		instance = std::make_unique<ViperCraft>(errorCode);
+		instance->initGame();
+	}
+
+	ViperCraft* ViperCraft::GetInstance()
+	{
+		return instance.get();
+	}
+
+	ViperGL::RenderQueue* ViperCraft::getRenderQueue()
+	{
+		return &mRenderQueue;
+	}
+
 
 	void ViperCraft::processInput(double deltaTime)
 	{
 		glm::vec3 move = glm::vec3(0.f);
-		constexpr float MOVE_SPEED = 2.5f;
+		constexpr float MOVE_SPEED = 5.f;
 		if (Input::GetButtonDown(Input::Key::A))
 		{
 			move -= mCamera.right * (float)(MOVE_SPEED * deltaTime);
@@ -114,14 +110,16 @@ namespace ViperCraft
 
 	void ViperCraft::render()
 	{
-		mRenderQueue.prepareDraw();
-		for (int i = 0; i < CHUNK_COUNT; ++i)
-		{
-			mChunks[i].drawAll(mRenderQueue);
-		}
+		mWorld.render();
 	}
 
 	void ViperCraft::postEvents(double deltaTime)
 	{
+	}
+
+
+	void ViperCraft::initGame()
+	{
+		World::Generate(mWorld);
 	}
 }

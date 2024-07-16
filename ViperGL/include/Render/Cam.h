@@ -13,9 +13,7 @@ namespace ViperGL
 
 		void updateMatrices();
 
-	private:
 		glm::mat4 mProj;
-		glm::mat4 mModel;
 		glm::mat4 mView;
 		
 		Camera& mCamera;

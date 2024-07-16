@@ -5,7 +5,7 @@
 int main()
 {
 	ViperCraft::ViperCraftErrorCode ec;
-	ViperCraft::ViperCraft game(ec);
+	ViperCraft::ViperCraft::CreateGame(ec);
 
 	if (ec != ViperCraft::ViperCraftErrorCode::Success)
 	{
@@ -13,6 +13,6 @@ int main()
 		return -1;
 	}
 
-	game.run();
+	ViperCraft::ViperCraft::GetInstance()->run();
 	return 0;
 }
