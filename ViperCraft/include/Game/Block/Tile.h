@@ -15,6 +15,7 @@ namespace ViperCraft
 		void draw(int renderBuffer, glm::vec3 position, ViperGL::RenderQueue* renderQueue);
 
 		std::string_view getName() const;
+		bool isSolidTile() const;
 
 		static Tile* GetTile(std::string_view name);
 

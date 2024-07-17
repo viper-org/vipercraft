@@ -21,5 +21,6 @@ namespace ViperCraft
 		Player& mParent;
 
 		void onTick(double deltaTime);
+		bool canPlayerMoveInto(glm::vec3 position);
 	};
 }

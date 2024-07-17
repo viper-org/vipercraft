@@ -17,6 +17,7 @@ namespace ViperCraft
 
 		return &mLoadedChunks[(int)abs(offset.x)][(int)abs(offset.z)];
 	}
+
 	void World::render()
 	{
 		ViperCraft::GetInstance()->getRenderQueue()->draw();
@@ -51,5 +52,7 @@ namespace ViperCraft
 			chunkPosition.x += 16;
 			chunkPosition.z = 0;
 		}
+		world.mLoadedChunks[0][0].getTile({ 1,1,1 }) = Tile::GetTile("cobblestone");
+		world.mLoadedChunks[0][0].chunkUpdated();
 	}
 }

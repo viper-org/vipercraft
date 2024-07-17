@@ -77,6 +77,11 @@ namespace ViperCraft
 		mOnTickHandlers.push_back(std::move(handler));
 	}
 
+	World* ViperCraft::getWorld()
+	{
+		return &mWorld;
+	}
+
 	ViperGL::RenderQueue* ViperCraft::getRenderQueue()
 	{
 		return &mRenderQueue;

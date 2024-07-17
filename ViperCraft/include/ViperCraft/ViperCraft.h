@@ -31,6 +31,7 @@ namespace ViperCraft
 
 		void onTick(std::function<void(double)> handler);
 
+		World* getWorld();
 		ViperGL::RenderQueue* getRenderQueue();
 
 	private:

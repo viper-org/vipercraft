@@ -3,7 +3,7 @@
 namespace ViperCraft
 {
 	Player::Player()
-		: mPosition(nullptr)
+		: mPosition(0, 1, 0)
 		, mController(*this)
 	{
 	}
@@ -11,6 +11,11 @@ namespace ViperCraft
 	void Player::init()
 	{
 		mController.init();
+	}
+
+	const glm::vec3& Player::getPosition() const
+	{
+		return mPosition;
 	}
 
 	PlayerController& Player::getPlayerController()

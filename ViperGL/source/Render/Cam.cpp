@@ -15,7 +15,7 @@ namespace ViperGL
 		, mCamera(camera)
 		, mShaderId(shaderId)
 	{
-		mProj = glm::perspective(glm::radians(90.f), 1920.f / 1080.f, 0.1f, 100.f); // TODO: Render distance and proper aspect ratio
+		mProj = glm::perspective(glm::radians(90.f), 1920.f / 1080.f, 0.01f, 100.f); // TODO: Render distance and proper aspect ratio
 	}
 
 	void Cam::updateMatrices()

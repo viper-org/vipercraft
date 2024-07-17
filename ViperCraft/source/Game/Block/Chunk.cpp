@@ -26,7 +26,7 @@ namespace ViperCraft
 	Tile*& Chunk::getTile(glm::vec3 position)
 	{
 		glm::vec3 offset = position - mPosition;
-		
+
 		return mTiles[(int)std::abs(offset.x)][(int)std::abs(offset.y)][(int)std::abs(offset.z)];
 	}
 
