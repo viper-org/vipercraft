@@ -4,6 +4,8 @@
 
 #include <stb_image.h>
 
+#include <unordered_map>
+
 namespace ViperGL
 {
 	Window::Window()
@@ -44,6 +46,8 @@ namespace ViperGL
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
 		glClearColor(1.f, 0.f, 1.f, 1.f);
+
+		glfwSetMouseButtonCallback(mWindowCtx, mouseButtonCallback);
 	}
 
 
@@ -62,6 +66,12 @@ namespace ViperGL
 		glfwSwapBuffers(mWindowCtx);
 		glfwPollEvents();
 		glFlush();
+	}
+
+	std::unordered_map<int, std::vector<std::function<void()> > > mouseHandlers;
+	void Window::onMouseButtonDown(int button, std::function<void()> func)
+	{
+		mouseHandlers[button].push_back(func);
 	}
 
 	double Window::getDeltaTime()
@@ -91,5 +101,16 @@ namespace ViperGL
 	GLFWwindow* Window::getWindowCtx() const
 	{
 		return mWindowCtx;
+	}
+
+	void Window::mouseButtonCallback(GLFWwindow*, int button, int action, int)
+	{
+		if (action == GLFW_PRESS)
+		{
+			for (auto& func : mouseHandlers[button])
+			{
+				func();
+			}
+		}
 	}
 }

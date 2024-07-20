@@ -52,7 +52,7 @@ namespace ViperCraft
 			chunkPosition.x += 16;
 			chunkPosition.z = 0;
 		}
-		world.mLoadedChunks[0][0].getTile({ 1,1,1 }) = Tile::GetTile("cobblestone");
+		world.mLoadedChunks[0][0].getTile({ 1,2,1 }) = Tile::GetTile("cobblestone");
 		world.mLoadedChunks[0][0].chunkUpdated();
 	}
 }

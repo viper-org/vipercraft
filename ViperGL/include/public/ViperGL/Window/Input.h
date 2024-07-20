@@ -1,5 +1,7 @@
 #pragma once
 
+#include <functional>
+
 namespace ViperGL
 {
 	class Window;
@@ -31,7 +33,15 @@ namespace ViperGL
 			AxisX
 		};
 
+		enum class MouseButton
+		{
+			Left,
+			Right,
+		};
+
 		KeyState GetKeyState(Window& window, Key key);
+
+		void OnMouseButtonDown(Window& window, MouseButton button, std::function<void()> func);
 
 		float GetMouseAxis(Window& window, MouseAxis axis);
 		void SetCursorLocked(Window& window, bool locked);

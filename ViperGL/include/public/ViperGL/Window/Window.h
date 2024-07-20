@@ -3,6 +3,7 @@
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
+#include <functional>
 #include <string>
 
 namespace ViperGL
@@ -25,6 +26,8 @@ namespace ViperGL
 		void clear();
 		void mainLoop();
 
+		void onMouseButtonDown(int button, std::function<void()> func);
+
 		double getDeltaTime();
 
 		unsigned int getWidth() const;
@@ -41,5 +44,7 @@ namespace ViperGL
 		GLFWwindow* mWindowCtx;
 
 		double mLastTime; // for deltatime calculation
+
+		static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 	};
 }

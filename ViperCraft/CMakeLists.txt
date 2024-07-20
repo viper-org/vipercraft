@@ -18,7 +18,7 @@ set(HEADERS
 	
 	"include/Game/Block/Tile.h"
 	"include/Game/Block/Chunk.h"
- "include/Game/World/World.h" "include/Game/Player/PlayerController.h" "include/Game/Player/Player.h" "include/Physics/Collider.h")
+ "include/Game/World/World.h" "include/Game/Player/PlayerController.h" "include/Game/Player/Player.h" "include/Physics/Collider.h" "include/Physics/Raycast.h" "source/Physics/Raycast.cpp")
 
 source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${SOURCES} ${HEADERS})
 

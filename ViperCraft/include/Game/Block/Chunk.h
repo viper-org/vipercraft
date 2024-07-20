@@ -18,6 +18,8 @@ namespace ViperCraft
 
 		void beginRendering();
 
+		void chunkUpdated();
+
 		Tile*& getTile(glm::vec3 position);
 
 	private:
@@ -26,6 +28,5 @@ namespace ViperCraft
 
 		int mRenderBuffer;
 
-		void chunkUpdated();
 	};
 }

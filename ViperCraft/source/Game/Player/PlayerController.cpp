@@ -1,16 +1,22 @@
 #include <Game/Player/PlayerController.h>
 #include <Game/Player/Player.h>
 
+#include <Game/World/World.h>
+
 #include <ViperCraft/ViperCraft.h>
 
 #include <Physics/Collider.h>
+#include <Physics/Raycast.h>
 
 #include <Input/Input.h>
+
+#include <iostream>
 
 namespace ViperCraft
 {
 	PlayerController::PlayerController(Player& parent)
 		: mParent(parent)
+		, mVelocity(0,0,0)
 	{
 	}
 	
@@ -18,6 +24,8 @@ namespace ViperCraft
 	{
 		auto handler = std::bind(&PlayerController::onTick, this, std::placeholders::_1);
 		ViperCraft::GetInstance()->onTick(handler);
+
+		Input::OnMouseButtonDown(Input::MouseButton::Left, std::bind(&PlayerController::onMouseClick, this));
 	}
 
 	ViperGL::Camera& PlayerController::getCamera()
@@ -25,90 +33,127 @@ namespace ViperCraft
 		return mCamera;
 	}
 
+	
+	void PlayerController::doCollisions(double deltaTime)
+	{
+		// returns the new value of the passed axis
+		auto checkAxis = [this, deltaTime](float axis, glm::vec3 component) -> float {
+			constexpr float PLAYER_SIZE = 0.6f;
 
-	void PlayerController::onTick(double deltaTime)
+			auto newPosition = mParent.mPosition + component * (float)deltaTime;
+
+			// Create the player bounding box
+			std::array<glm::vec3, 4> playerCorners = {
+				newPosition + mCamera.forward * PLAYER_SIZE + mCamera.right * PLAYER_SIZE,
+				newPosition + mCamera.forward * PLAYER_SIZE - mCamera.right * PLAYER_SIZE,
+				newPosition - mCamera.forward * PLAYER_SIZE + mCamera.right * PLAYER_SIZE,
+				newPosition - mCamera.forward * PLAYER_SIZE - mCamera.right * PLAYER_SIZE,
+			};
+			auto minX = std::min_element(playerCorners.begin(), playerCorners.end(), [](auto& a, auto& b) {
+				return a.x < b.x;
+				})->x;
+			auto maxX = std::max_element(playerCorners.begin(), playerCorners.end(), [](auto& a, auto& b) {
+				return a.x < b.x;
+				})->x;
+			auto minZ = std::min_element(playerCorners.begin(), playerCorners.end(), [](auto& a, auto& b) {
+				return a.z < b.z;
+				})->z;
+			auto maxZ = std::max_element(playerCorners.begin(), playerCorners.end(), [](auto& a, auto& b) {
+				return a.z < b.z;
+				})->z;
+			Physics::BoundingBox playerBB = Physics::BoundingBox(glm::vec3(minX, newPosition.y, minZ), glm::vec3(maxX, newPosition.y + 1.8f, maxZ));
+
+			glm::vec3 blockPos = glm::vec3(floor(newPosition.x), floor(newPosition.y), floor(newPosition.z));
+			auto nearest = {
+				blockPos,
+			};
+
+			auto doCollision = [this, playerBB, &axis](const glm::vec3& position) {
+				auto chunk = ViperCraft::GetInstance()->getWorld()->getPositionChunk(position);
+				auto tile = chunk->getTile(position);
+				if (!tile || !tile->isSolidTile()) return;
+
+				Physics::BoundingBox block = Physics::BoundingBox(position, position + 1.f);
+				Physics::Collision coll;
+				auto collided = playerBB.collide(block, coll);
+				if (collided)
+				{
+					axis = 0;
+				}
+			};
+			for (auto& position : nearest)
+			{
+				auto topPosition = position + glm::vec3(0.f, 1.f, 0.f);
+
+				doCollision(position);
+				doCollision(topPosition);
+			}
+			return axis;
+		};
+
+		mVelocity.x = checkAxis(mVelocity.x, glm::vec3(mVelocity.x, 0.f, 0.f));
+		mVelocity.z = checkAxis(mVelocity.z, glm::vec3(0.f, 0.f, mVelocity.z));
+	}
+
+	void PlayerController::updatePosition(double deltaTime)
+	{
+		constexpr float CAMERA_HEIGHT = 1.62f;
+
+		mParent.mPosition += mVelocity * (float)deltaTime;
+		mCamera.position = mParent.mPosition + glm::vec3(0, CAMERA_HEIGHT, 0);
+	}
+
+	void PlayerController::processInput()
 	{
 		constexpr float MOVE_SPEED = 5.f;
-		constexpr float CAMERA_HEIGHT = 1.62f;
 
 		glm::vec3 move = glm::vec3(0.f);
 		if (Input::GetButtonDown(Input::Key::A))
 		{
-			auto step = -mCamera.right * (float)(MOVE_SPEED * deltaTime);
-			//if (canPlayerMoveInto(mParent.mPosition + step))
-				move += step;
+			auto step = -mCamera.right * MOVE_SPEED;
+			move += step;
 		}
 		if (Input::GetButtonDown(Input::Key::D))
 		{
-			auto step = mCamera.right * (float)(MOVE_SPEED * deltaTime);
-			//if (canPlayerMoveInto(mParent.mPosition + step))
-				move += step;
+			auto step = mCamera.right * MOVE_SPEED;
+			move += step;
 		}
 		if (Input::GetButtonDown(Input::Key::W))
 		{
-			auto step = mCamera.forward * (float)(MOVE_SPEED * deltaTime);
-			//if (canPlayerMoveInto(mParent.mPosition + step))
-				move += step;
+			auto step = mCamera.forward * MOVE_SPEED;
+			move += step;
 		}
 		if (Input::GetButtonDown(Input::Key::S))
 		{
-			auto step = -mCamera.forward * (float)(MOVE_SPEED * deltaTime);
-			//if (canPlayerMoveInto(mParent.mPosition + step))
-				move += step;
+			auto step = -mCamera.forward * MOVE_SPEED;
+			move += step;
 		}
 
-		// TODO: Replace this with proper wall sliding
-		if (!canPlayerMoveInto(mParent.mPosition + glm::vec3(move.x, 0, 0))) move.x = 0;
-		if (!canPlayerMoveInto(mParent.mPosition + glm::vec3(0, 0, move.z))) move.z = 0;
-		mParent.mPosition += move;
+		mVelocity += move;
 
 		mCamera.yaw += Input::GetInputAxis(Input::InputAxis::AxisX);
 		mCamera.pitch += Input::GetInputAxis(Input::InputAxis::AxisY);
 
 		mCamera.pitch = glm::clamp(mCamera.pitch, -89.9f, 89.9f);
-		mCamera.position = mParent.mPosition + glm::vec3(0, CAMERA_HEIGHT, 0) - mCamera.forward * 0.1f;
 	}
 
-	bool PlayerController::canPlayerMoveInto(glm::vec3 position)
+	void PlayerController::onTick(double deltaTime)
 	{
-		constexpr float PLAYER_SIZE = 0.6f;
+		mVelocity = glm::vec3(0.f);
+		processInput();
+		doCollisions(deltaTime);
+		updatePosition(deltaTime);
+	}
 
-		auto checkIndividualPos = [](Physics::BoundingBox& player, glm::vec3 block) {
-			auto chunk = ViperCraft::GetInstance()->getWorld()->getPositionChunk(block);
-
-			auto tile = chunk->getTile(block);
-			Physics::BoundingBox BB = Physics::BoundingBox(block, block + 1.f);
-
-			if (tile)
-				if (tile->isSolidTile() && BB.intersects(player)) return false;
-			return true;
-		};
-
-		// create player bounding box
-		std::array<glm::vec3, 4> playerCorners = {
-			position + mCamera.forward * PLAYER_SIZE + mCamera.right * PLAYER_SIZE,
-			position + mCamera.forward * PLAYER_SIZE - mCamera.right * PLAYER_SIZE,
-			position - mCamera.forward * PLAYER_SIZE + mCamera.right * PLAYER_SIZE,
-			position - mCamera.forward * PLAYER_SIZE - mCamera.right * PLAYER_SIZE,
-		};
-		auto minX = std::min_element(playerCorners.begin(), playerCorners.end(), [](auto& a, auto& b) {
-			return a.x < b.x;
-		})->x;
-		auto maxX = std::max_element(playerCorners.begin(), playerCorners.end(), [](auto& a, auto& b) {
-			return a.x < b.x;
-		})->x;
-		auto minZ = std::min_element(playerCorners.begin(), playerCorners.end(), [](auto& a, auto& b) {
-			return a.z < b.z;
-		})->z;
-		auto maxZ = std::max_element(playerCorners.begin(), playerCorners.end(), [](auto& a, auto& b) {
-			return a.z < b.z;
-		})->z;
-		Physics::BoundingBox playerBB = Physics::BoundingBox(glm::vec3(minX, position.y, minZ), glm::vec3(maxX, position.y + 1.8f, maxZ));
-		
-		// check against top and bottom blocks of new position(maybe change this to a larger volume of blocks)
-		if (!checkIndividualPos(playerBB, position)) return false;
-		if (!checkIndividualPos(playerBB, position + glm::vec3(0, 1, 0))) return false;
-
-		return true;
+	void PlayerController::onMouseClick()
+	{
+		glm::vec3 hitBlock;
+		auto hit = Physics::RaycastSolid(mParent.mPosition + glm::vec3(0.f, 1.6f, 0.f), mCamera.front, 3.f, hitBlock);
+		if (hit)
+		{
+			auto chunk = ViperCraft::GetInstance()->getWorld()->getPositionChunk(hitBlock);
+			chunk->getTile(hitBlock) = nullptr; // air
+			chunk->chunkUpdated();
+		}
 	}
 }

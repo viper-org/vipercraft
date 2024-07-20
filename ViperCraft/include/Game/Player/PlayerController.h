@@ -18,9 +18,16 @@ namespace ViperCraft
 	private:
 		ViperGL::Camera mCamera;
 
+		glm::vec3 mVelocity;
+
 		Player& mParent;
 
+		void doCollisions(double deltaTime);
+		void updatePosition(double deltaTime);
+
+		void processInput();
+
 		void onTick(double deltaTime);
-		bool canPlayerMoveInto(glm::vec3 position);
+		void onMouseClick();
 	};
 }

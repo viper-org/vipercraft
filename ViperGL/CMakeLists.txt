@@ -50,7 +50,6 @@ set(HEADERS
 set(DEP_SOURCES
 	"deps/glad/src/glad.c"
 )
-
 source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${SOURCES} ${HEADERS} ${DEP_SOURCES})
 
 add_library (ViperGL ${SOURCES} ${HEADERS} ${DEP_SOURCES})

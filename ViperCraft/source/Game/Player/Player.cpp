@@ -3,7 +3,7 @@
 namespace ViperCraft
 {
 	Player::Player()
-		: mPosition(0, 1, 0)
+		: mPosition(3, 1.05, 3)
 		, mController(*this)
 	{
 	}

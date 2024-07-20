@@ -171,6 +171,17 @@ namespace ViperGL
 			}
 		}
 
+		static inline int GLFWMouseButton(MouseButton button)
+		{
+			switch (button)
+			{
+				case MouseButton::Left:
+					return GLFW_MOUSE_BUTTON_LEFT;
+				case MouseButton::Right:
+					return GLFW_MOUSE_BUTTON_RIGHT;
+			}
+		}
+
 		static inline KeyState FromGLFWState(int state)
 		{
 			switch (state)
@@ -191,6 +202,11 @@ namespace ViperGL
 			GLFWwindow* windowCtx = window.getWindowCtx();
 			int state = glfwGetKey(windowCtx, GLFWKey(key));
 			return FromGLFWState(state);
+		}
+
+		void OnMouseButtonDown(Window& window, MouseButton button, std::function<void()> func)
+		{
+			window.onMouseButtonDown(GLFWMouseButton(button), func);
 		}
 
 		float GetMouseAxis(Window& window, MouseAxis axis)
