@@ -8,7 +8,38 @@ namespace ViperCraft
 {
 	namespace Physics
 	{
-		bool RaycastSolid(glm::vec3 origin, glm::vec3 direction, float maxDist, glm::vec3& hit)
+
+		static inline glm::vec3 GetNormal(glm::vec3 center, glm::vec3 point)
+		{
+			glm::vec3 normal = glm::vec3(0.f);
+			float min = INFINITY;
+			float distance;
+			point -= center;
+
+			distance = abs(1 - abs(point.x));
+			if (distance < min)
+			{
+				min = distance;
+				normal = glm::sign(point.x) * glm::vec3(1.f, 0.f, 0.f);
+			}
+
+			distance = abs(1 - abs(point.y));
+			if (distance < min)
+			{
+				min = distance;
+				normal = glm::sign(point.y) * glm::vec3(0.f, 1.f, 0.f);
+			}
+
+			distance = abs(1 - abs(point.z));
+			if (distance < min)
+			{
+				min = distance;
+				normal = glm::sign(point.z) * glm::vec3(0.f, 0.f, 1.f);
+			}
+
+			return normal;
+		}
+		bool RaycastSolid(glm::vec3 origin, glm::vec3 direction, float maxDist, RaycastHit& hit)
 		{
 			constexpr float RAY_STEP = 0.1f;
 
@@ -22,7 +53,9 @@ namespace ViperCraft
 				auto tile = chunk->getTile(position);
 				if (tile && tile->isSolidTile())
 				{
-					hit = position;
+					hit.point = position;
+					auto blockCenter = floor(position) + 0.5f;
+					hit.normal = GetNormal(blockCenter, position);
 					return true;
 				}
 

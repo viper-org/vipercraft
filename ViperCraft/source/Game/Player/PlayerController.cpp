@@ -25,7 +25,8 @@ namespace ViperCraft
 		auto handler = std::bind(&PlayerController::onTick, this, std::placeholders::_1);
 		ViperCraft::GetInstance()->onTick(handler);
 
-		Input::OnMouseButtonDown(Input::MouseButton::Left, std::bind(&PlayerController::onMouseClick, this));
+		Input::OnMouseButtonDown(Input::MouseButton::Left,  std::bind(&PlayerController::onLeftMouseClick,  this));
+		Input::OnMouseButtonDown(Input::MouseButton::Right, std::bind(&PlayerController::onRightMouseClick, this));
 	}
 
 	ViperGL::Camera& PlayerController::getCamera()
@@ -145,15 +146,31 @@ namespace ViperCraft
 		updatePosition(deltaTime);
 	}
 
-	void PlayerController::onMouseClick()
+	void PlayerController::onLeftMouseClick()
 	{
-		glm::vec3 hitBlock;
-		auto hit = Physics::RaycastSolid(mParent.mPosition + glm::vec3(0.f, 1.6f, 0.f), mCamera.front, 3.f, hitBlock);
-		if (hit)
+		Physics::RaycastHit hit;
+		if (Physics::RaycastSolid(mParent.mPosition + glm::vec3(0.f, 1.6f, 0.f), mCamera.front, 3.f, hit))
 		{
-			auto chunk = ViperCraft::GetInstance()->getWorld()->getPositionChunk(hitBlock);
-			chunk->getTile(hitBlock) = nullptr; // air
+			auto chunk = ViperCraft::GetInstance()->getWorld()->getPositionChunk(hit.point);
+			chunk->getTile(hit.point) = nullptr; // air
 			chunk->chunkUpdated();
+		}
+	}
+
+	void PlayerController::onRightMouseClick()
+	{
+		Physics::RaycastHit hit;
+		if (Physics::RaycastSolid(mParent.mPosition + glm::vec3(0.f, 1.6f, 0.f), mCamera.front, 3.f, hit))
+		{
+			auto newBlockPos = floor(hit.point + hit.normal);
+
+			// make sure we aren't placing a block inside the player
+			if (newBlockPos != floor(mParent.mPosition) && newBlockPos != floor(mParent.mPosition) + glm::vec3(0.f, 1.f, 0.f))
+			{
+				auto chunk = ViperCraft::GetInstance()->getWorld()->getPositionChunk(newBlockPos);
+				chunk->getTile(newBlockPos) = Tile::GetTile("cobblestone");
+				chunk->chunkUpdated();
+			}
 		}
 	}
 }

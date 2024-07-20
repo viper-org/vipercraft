@@ -28,6 +28,7 @@ namespace ViperCraft
 		void processInput();
 
 		void onTick(double deltaTime);
-		void onMouseClick();
+		void onLeftMouseClick();
+		void onRightMouseClick();
 	};
 }
