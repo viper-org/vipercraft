@@ -48,6 +48,7 @@ namespace ViperGL
 		glClearColor(1.f, 0.f, 1.f, 1.f);
 
 		glfwSetMouseButtonCallback(mWindowCtx, mouseButtonCallback);
+		glfwSetFramebufferSizeCallback(mWindowCtx, framebufferSizeCallback);
 	}
 
 
@@ -112,5 +113,10 @@ namespace ViperGL
 				func();
 			}
 		}
+	}
+
+	void Window::framebufferSizeCallback(GLFWwindow*, int width, int height)
+	{
+		glViewport(0, 0, width, height);
 	}
 }

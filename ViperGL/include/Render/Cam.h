@@ -15,6 +15,8 @@ namespace ViperGL
 
 		glm::mat4 mProj;
 		glm::mat4 mView;
+
+		float mFov;
 		
 		Camera& mCamera;
 

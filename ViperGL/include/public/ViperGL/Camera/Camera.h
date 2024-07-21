@@ -10,6 +10,8 @@ namespace ViperGL
 		float pitch{ 0.f };
 		float yaw{ 270.f };
 
+		float fov{ 90.f };
+
 		glm::vec3 position{ 0.f, 2.f, 0.f };
 		glm::vec3 target;
 

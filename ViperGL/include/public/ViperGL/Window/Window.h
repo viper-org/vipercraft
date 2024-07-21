@@ -46,5 +46,6 @@ namespace ViperGL
 		double mLastTime; // for deltatime calculation
 
 		static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
+		static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 	};
 }

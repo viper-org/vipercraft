@@ -107,6 +107,16 @@ namespace ViperCraft
 
 	void PlayerController::processInput()
 	{
+		if (isSprinting())
+		{
+			mParent.mMoveSpeed *= 1.3f;
+			mCamera.fov = 99.f;
+		}
+		else
+		{
+			mCamera.fov = 90.f;
+		}
+
 		glm::vec3 move = glm::vec3(0.f);
 		if (Input::GetButtonDown(Input::Key::A))
 		{
@@ -141,6 +151,11 @@ namespace ViperCraft
 		mCamera.pitch += Input::GetInputAxis(Input::InputAxis::AxisY);
 
 		mCamera.pitch = glm::clamp(mCamera.pitch, -89.9f, 89.9f);
+	}
+
+	bool PlayerController::isSprinting()
+	{
+		return Input::GetButtonDown(Input::Key::LShift);
 	}
 
 	void PlayerController::onTick(double deltaTime)

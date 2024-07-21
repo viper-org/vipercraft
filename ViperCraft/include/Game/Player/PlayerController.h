@@ -27,6 +27,7 @@ namespace ViperCraft
 		void updatePosition(double deltaTime);
 		
 		void processInput();
+		bool isSprinting();
 
 		void onTick(double deltaTime);
 		void onLeftMouseClick();
