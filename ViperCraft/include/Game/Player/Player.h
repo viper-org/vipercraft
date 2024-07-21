@@ -20,6 +20,9 @@ namespace ViperCraft
 	private:
 		glm::vec3 mPosition;
 
+		float mMoveSpeed;
+		float mJumpHeight; // in blocks
+
 		PlayerController mController;
 	};
 }

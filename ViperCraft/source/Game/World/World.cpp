@@ -26,7 +26,7 @@ namespace ViperCraft
 
 	void World::Generate(World& world)
 	{
-		constexpr int WORLD_SIZE = 1;
+		constexpr int WORLD_SIZE = 4;
 		world.mLoadedChunks.reserve(WORLD_SIZE);
 		glm::vec3 chunkPosition = glm::vec3(0.f);
 		for (auto i = 0; i < WORLD_SIZE; ++i)
@@ -41,10 +41,9 @@ namespace ViperCraft
 				{
 					for (int j = 0; j < 16; ++j)
 					{
-						if ((i + j % 2) % 2 == 0)
-							chunk.getTile(glm::vec3(chunk.mPosition.x + i, 0, chunk.mPosition.z + j)) = Tile::GetTile("dirt");
-						else
-							chunk.getTile(glm::vec3(chunk.mPosition.x + i, 0, chunk.mPosition.z + j)) = Tile::GetTile("cobblestone");
+						chunk.getTile(glm::vec3(chunk.mPosition.x + i, 2, chunk.mPosition.z + j)) = Tile::GetTile("dirt");
+						chunk.getTile(glm::vec3(chunk.mPosition.x + i, 1, chunk.mPosition.z + j)) = Tile::GetTile("cobblestone");
+						chunk.getTile(glm::vec3(chunk.mPosition.x + i, 0, chunk.mPosition.z + j)) = Tile::GetTile("cobblestone");
 					}
 				}
 				chunk.chunkUpdated();
@@ -52,7 +51,5 @@ namespace ViperCraft
 			chunkPosition.x += 16;
 			chunkPosition.z = 0;
 		}
-		world.mLoadedChunks[0][0].getTile({ 1,2,1 }) = Tile::GetTile("cobblestone");
-		world.mLoadedChunks[0][0].chunkUpdated();
 	}
 }

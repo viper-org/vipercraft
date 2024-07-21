@@ -3,7 +3,9 @@
 namespace ViperCraft
 {
 	Player::Player()
-		: mPosition(3, 1.05, 3)
+		: mPosition(3, 3.f, 3)
+		, mMoveSpeed(4.317f)
+		, mJumpHeight(1.25f)
 		, mController(*this)
 	{
 	}

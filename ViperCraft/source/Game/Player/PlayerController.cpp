@@ -16,6 +16,7 @@ namespace ViperCraft
 {
 	PlayerController::PlayerController(Player& parent)
 		: mParent(parent)
+		, mAcceleration(0,0,0)
 		, mVelocity(0,0,0)
 	{
 	}
@@ -106,28 +107,32 @@ namespace ViperCraft
 
 	void PlayerController::processInput()
 	{
-		constexpr float MOVE_SPEED = 5.f;
-
 		glm::vec3 move = glm::vec3(0.f);
 		if (Input::GetButtonDown(Input::Key::A))
 		{
-			auto step = -mCamera.right * MOVE_SPEED;
+			auto step = -mCamera.right * mParent.mMoveSpeed;
 			move += step;
 		}
 		if (Input::GetButtonDown(Input::Key::D))
 		{
-			auto step = mCamera.right * MOVE_SPEED;
+			auto step = mCamera.right * mParent.mMoveSpeed;
 			move += step;
 		}
 		if (Input::GetButtonDown(Input::Key::W))
 		{
-			auto step = mCamera.forward * MOVE_SPEED;
+			auto step = mCamera.forward * mParent.mMoveSpeed;
 			move += step;
 		}
 		if (Input::GetButtonDown(Input::Key::S))
 		{
-			auto step = -mCamera.forward * MOVE_SPEED;
+			auto step = -mCamera.forward * mParent.mMoveSpeed;
 			move += step;
+		}
+
+		if (isPlayerGroundedAt(mParent.mPosition) && Input::GetButtonDown(Input::Key::Space))
+		{
+			constexpr float JUMP_FORCE = 100;
+			mAcceleration.y += JUMP_FORCE * mParent.mJumpHeight;
 		}
 
 		mVelocity += move;
@@ -140,7 +145,8 @@ namespace ViperCraft
 
 	void PlayerController::onTick(double deltaTime)
 	{
-		mVelocity = glm::vec3(0.f);
+		mVelocity = mAcceleration * (float)deltaTime;
+		checkGroundedness(deltaTime);
 		processInput();
 		doCollisions(deltaTime);
 		updatePosition(deltaTime);
@@ -172,5 +178,31 @@ namespace ViperCraft
 				chunk->chunkUpdated();
 			}
 		}
+	}
+
+	void PlayerController::checkGroundedness(double deltaTime)
+	{
+		if (!isPlayerGroundedAt(mParent.mPosition + glm::vec3(0.f, mVelocity.y, 0.f) * (float)deltaTime))
+		{
+			mAcceleration.y -= 7.f;
+			mParent.mMoveSpeed = 2.f;
+		}
+		else
+		{
+			mAcceleration.y = 0.f;
+			mParent.mMoveSpeed = 4.317f;
+		}
+	}
+
+	bool PlayerController::isPlayerGroundedAt(glm::vec3 position)
+	{
+		Physics::RaycastHit hit;
+		return (
+			Physics::RaycastSolid(position, glm::vec3(0.f, -1.f, 0.f),   0.3f, hit) //||
+			//Physics::RaycastSolid(position, glm::vec3(0.5f, -1.f, 0.f),  0.3f, hit) ||
+			//Physics::RaycastSolid(position, glm::vec3(-0.5f, -1.f, 0.f), 0.3f, hit) ||
+			//Physics::RaycastSolid(position, glm::vec3(0.f, -1.f, 0.5f),  0.3f, hit) ||
+			//Physics::RaycastSolid(position, glm::vec3(0.f, -1.f, -0.5f), 0.3f, hit)
+		);
 	}
 }
