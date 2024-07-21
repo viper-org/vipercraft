@@ -10,7 +10,7 @@ namespace ViperCraft
 	{
 	public:
 		Tile();
-		Tile(ViperGL::TextureCoords texture, std::string name);
+		Tile(std::array<ViperGL::TextureCoords, 6> faceTextures, std::string name);
 
 		void draw(int renderBuffer, glm::vec3 position, ViperGL::RenderQueue* renderQueue);
 
@@ -20,7 +20,7 @@ namespace ViperCraft
 		static Tile* GetTile(std::string_view name);
 
 	private:
-		ViperGL::TextureCoords mTexture;
+		std::array<ViperGL::TextureCoords, 6> mFaceTextures;
 		std::string mName;
 	};
 }

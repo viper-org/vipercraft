@@ -27,7 +27,7 @@ namespace ViperGL
 
 	private:
 		void resetModels();
-		void quad(std::array<glm::vec3, 4> corners, glm::vec2 texCoords);
+		void quad(std::array<glm::vec3, 4> corners, glm::vec2 texCoords, float light);
 		void bindModels();
 
 		RenderQueue* mParent;
@@ -54,7 +54,7 @@ namespace ViperGL
 		void removeBuffer(int buffer);
 
 		void resetModels(int bufferId);
-		void quad(int bufferId, std::array<glm::vec3, 4> corners, glm::vec2 texCoords);
+		void quad(int bufferId, std::array<glm::vec3, 4> corners, glm::vec2 texCoords, float light);
 		void bindModels(int bufferId);
 
 		void draw();

@@ -34,17 +34,17 @@ namespace ViperGL
 		mIndices.clear();
 	}
 
-	void RenderBuffer::quad(std::array<glm::vec3, 4> corners, glm::vec2 texCoords)
+	void RenderBuffer::quad(std::array<glm::vec3, 4> corners, glm::vec2 texCoords, float light)
 	{
 		float vertices[] = {
 			corners[0][0], corners[0][1], corners[0][2],
-				(1.f + texCoords.x) / mParent->mTextureAtlas->getTextureGridSize().x, (1.f + texCoords.y) / mParent->mTextureAtlas->getTextureGridSize().y,
+				(1.f + texCoords.x) / mParent->mTextureAtlas->getTextureGridSize().x, (1.f + texCoords.y) / mParent->mTextureAtlas->getTextureGridSize().y, light,
 			corners[1][0], corners[1][1], corners[1][2],
-				(1.f + texCoords.x) / mParent->mTextureAtlas->getTextureGridSize().x, (0.f + texCoords.y) / mParent->mTextureAtlas->getTextureGridSize().y,
+				(1.f + texCoords.x) / mParent->mTextureAtlas->getTextureGridSize().x, (0.f + texCoords.y) / mParent->mTextureAtlas->getTextureGridSize().y, light,
 			corners[2][0], corners[2][1], corners[2][2],
-				(0.f + texCoords.x) / mParent->mTextureAtlas->getTextureGridSize().x, (0.f + texCoords.y) / mParent->mTextureAtlas->getTextureGridSize().y,
+				(0.f + texCoords.x) / mParent->mTextureAtlas->getTextureGridSize().x, (0.f + texCoords.y) / mParent->mTextureAtlas->getTextureGridSize().y, light,
 			corners[3][0], corners[3][1], corners[3][2],
-				(0.f + texCoords.x) / mParent->mTextureAtlas->getTextureGridSize().x, (1.f + texCoords.y) / mParent->mTextureAtlas->getTextureGridSize().y,
+				(0.f + texCoords.x) / mParent->mTextureAtlas->getTextureGridSize().x, (1.f + texCoords.y) / mParent->mTextureAtlas->getTextureGridSize().y, light,
 		};
 
 		static unsigned int INDICES[] = {
@@ -55,7 +55,7 @@ namespace ViperGL
 		unsigned int correctedIndices[6];
 		for (auto i = 0; i < 6; ++i)
 		{
-			correctedIndices[i] = INDICES[i] + mVertices.size() / 5;
+			correctedIndices[i] = INDICES[i] + mVertices.size() / 6;
 		}
 
 		std::copy(std::begin(vertices), std::end(vertices), std::back_inserter(mVertices));
@@ -75,10 +75,13 @@ namespace ViperGL
 
 		// vertices
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(mVertices[0]), (void*)0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(mVertices[0]), (void*)0);
 		// texture coordinates
 		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(mVertices[0]), (void*)(3 * sizeof(mVertices[0])));
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(mVertices[0]), (void*)(3 * sizeof(mVertices[0])));
+		// light data
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, 6 * sizeof(mVertices[0]), (void*)(5 * sizeof(mVertices[0])));
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mEBO);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, mIndices.size() * sizeof(mIndices[0]), mIndices.data(), GL_STATIC_DRAW);
@@ -126,11 +129,11 @@ namespace ViperGL
 		}
 	}
 
-	void RenderQueue::quad(int bufferId, std::array<glm::vec3, 4> corners, glm::vec2 texCoords)
+	void RenderQueue::quad(int bufferId, std::array<glm::vec3, 4> corners, glm::vec2 texCoords, float light)
 	{
 		if (auto buffer = findBuffer(bufferId))
 		{
-			buffer->quad(corners, texCoords);
+			buffer->quad(corners, texCoords, light);
 		}
 	}
 

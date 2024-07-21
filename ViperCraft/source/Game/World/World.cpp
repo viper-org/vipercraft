@@ -41,8 +41,8 @@ namespace ViperCraft
 				{
 					for (int j = 0; j < 16; ++j)
 					{
-						chunk.getTile(glm::vec3(chunk.mPosition.x + i, 2, chunk.mPosition.z + j)) = Tile::GetTile("dirt");
-						chunk.getTile(glm::vec3(chunk.mPosition.x + i, 1, chunk.mPosition.z + j)) = Tile::GetTile("cobblestone");
+						chunk.getTile(glm::vec3(chunk.mPosition.x + i, 2, chunk.mPosition.z + j)) = Tile::GetTile("grass_block");
+						chunk.getTile(glm::vec3(chunk.mPosition.x + i, 1, chunk.mPosition.z + j)) = Tile::GetTile("dirt");
 						chunk.getTile(glm::vec3(chunk.mPosition.x + i, 0, chunk.mPosition.z + j)) = Tile::GetTile("cobblestone");
 					}
 				}
