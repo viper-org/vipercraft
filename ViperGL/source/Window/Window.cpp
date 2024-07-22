@@ -45,7 +45,7 @@ namespace ViperGL
 		glViewport(0, 0, fWidth, fHeight);
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
-		glClearColor(1.f, 0.f, 1.f, 1.f);
+		glClearColor(0.53f, 0.81f, 0.92f, 1.f);
 
 		glfwSetMouseButtonCallback(mWindowCtx, mouseButtonCallback);
 		glfwSetFramebufferSizeCallback(mWindowCtx, framebufferSizeCallback);

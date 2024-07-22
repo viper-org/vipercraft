@@ -9,6 +9,7 @@ namespace ViperCraft
 	class Player
 	{
 	friend class PlayerController;
+	friend class ViperCraft;
 	public:
 		Player();
 

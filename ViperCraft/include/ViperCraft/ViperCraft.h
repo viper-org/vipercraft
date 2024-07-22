@@ -24,6 +24,7 @@ namespace ViperCraft
 		ViperCraft(ViperCraftErrorCode& errorCode);
 		~ViperCraft();
 
+		void setPlayerSpawn(glm::vec3 position);
 		void run();
 
 		static void CreateGame(ViperCraftErrorCode& errorCode);
@@ -32,6 +33,7 @@ namespace ViperCraft
 		void onTick(std::function<void(double)> handler);
 
 		World* getWorld();
+		Player* getPlayer();
 		ViperGL::RenderQueue* getRenderQueue();
 
 	private:

@@ -11,7 +11,7 @@ namespace ViperGL
 {
 	TextureAtlas::TextureAtlas(const std::string& name)
 		: mId(0)
-		, mTextureGridSize(4, 1)
+		, mTextureGridSize(4, 4)
 	{
 		std::filesystem::path texturePath = std::filesystem::path(SHADER_SOURCE_DIR) / "texture" / (name + ".png");
 

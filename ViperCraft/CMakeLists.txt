@@ -20,10 +20,16 @@ set(HEADERS
 	"include/Game/Block/Chunk.h"
  "include/Game/World/World.h" "include/Game/Player/PlayerController.h" "include/Game/Player/Player.h" "include/Physics/Collider.h" "include/Physics/Raycast.h" "source/Physics/Raycast.cpp")
 
-source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${SOURCES} ${HEADERS})
+set(DEP_SOURCES
+	"deps/stb_perlin/stb_perlin.cpp"
+)
 
-add_executable (ViperCraft ${SOURCES} ${HEADERS})
+source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${SOURCES} ${HEADERS} ${DEP_SOURCES})
+
+add_executable (ViperCraft ${SOURCES} ${HEADERS} ${DEP_SOURCES})
 target_include_directories(ViperCraft PUBLIC include)
 
 target_compile_features(ViperCraft PUBLIC cxx_std_20)
+
 target_link_libraries(ViperCraft ViperGL)
+target_include_directories(ViperCraft PRIVATE deps/stb_perlin)

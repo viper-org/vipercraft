@@ -36,6 +36,7 @@ namespace ViperGL
 
 	void RenderBuffer::quad(std::array<glm::vec3, 4> corners, glm::vec2 texCoords, float light)
 	{
+		texCoords.y = (mParent->mTextureAtlas->getTextureGridSize().y - 1) - texCoords.y;
 		float vertices[] = {
 			corners[0][0], corners[0][1], corners[0][2],
 				(1.f + texCoords.x) / mParent->mTextureAtlas->getTextureGridSize().x, (1.f + texCoords.y) / mParent->mTextureAtlas->getTextureGridSize().y, light,

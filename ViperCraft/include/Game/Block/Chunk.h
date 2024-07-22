@@ -24,6 +24,7 @@ namespace ViperCraft
 
 	private:
 		Tile* mTiles[16][256][16]; // x, y, z
+		float* mHeights;
 		glm::vec3 mPosition; // bottom left back side
 
 		int mRenderBuffer;

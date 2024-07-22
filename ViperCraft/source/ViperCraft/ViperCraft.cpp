@@ -44,6 +44,11 @@ namespace ViperCraft
 		glfwTerminate();
 	}
 
+	void ViperCraft::setPlayerSpawn(glm::vec3 position)
+	{
+		mPlayer.mPosition = position;
+	}
+
 	void ViperCraft::run()
 	{
 		while (!mWindow.shouldClose())
@@ -82,6 +87,11 @@ namespace ViperCraft
 		return &mWorld;
 	}
 
+	Player* ViperCraft::getPlayer()
+	{
+		return &mPlayer;
+	}
+
 	ViperGL::RenderQueue* ViperCraft::getRenderQueue()
 	{
 		return &mRenderQueue;
@@ -104,7 +114,7 @@ namespace ViperCraft
 
 	void ViperCraft::initGame()
 	{
-		World::Generate(mWorld);
+		World::Generate(mWorld, (unsigned long long)rand() * rand());
 		mPlayer.init();
 	}
 }

@@ -16,6 +16,7 @@ namespace ViperCraft
 
 		std::string_view getName() const;
 		bool isSolidTile() const;
+		bool isLiquid() const;
 
 		static Tile* GetTile(std::string_view name);
 
