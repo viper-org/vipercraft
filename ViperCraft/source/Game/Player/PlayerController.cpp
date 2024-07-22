@@ -141,7 +141,7 @@ namespace ViperCraft
 
 		if (isPlayerGroundedAt(mParent.mPosition) && Input::GetButtonDown(Input::Key::Space))
 		{
-			constexpr float JUMP_FORCE = 100;
+			constexpr float JUMP_FORCE = 150;
 			mAcceleration.y += JUMP_FORCE * mParent.mJumpHeight;
 		}
 
@@ -199,7 +199,7 @@ namespace ViperCraft
 	{
 		if (!isPlayerGroundedAt(mParent.mPosition + glm::vec3(0.f, mVelocity.y, 0.f) * (float)deltaTime))
 		{
-			mAcceleration.y -= 7.f;
+			mAcceleration.y -= 15.f;
 			mParent.mMoveSpeed = 2.f;
 		}
 		else

@@ -21,6 +21,18 @@ namespace ViperCraft
 	void Chunk::beginRendering()
 	{
 		mRenderBuffer = ViperCraft::GetInstance()->getRenderQueue()->newBuffer();
+		mTransparentRenderBuffer = ViperCraft::GetInstance()->getRenderQueue()->newBuffer();
+	}
+
+	void Chunk::draw()
+	{
+		ViperCraft::GetInstance()->getRenderQueue()->draw(mRenderBuffer);
+		ViperCraft::GetInstance()->getRenderQueue()->draw(mTransparentRenderBuffer);
+	}
+
+	glm::vec3 Chunk::getPosition()
+	{
+		return mPosition;
 	}
 
 	Tile*& Chunk::getTile(glm::vec3 position)
@@ -34,6 +46,7 @@ namespace ViperCraft
 	{
 		auto* renderQueue = ViperCraft::GetInstance()->getRenderQueue();
 		renderQueue->resetModels(mRenderBuffer);
+		renderQueue->resetModels(mTransparentRenderBuffer);
 
 		glm::vec3 position = mPosition;
 		for (auto& yz : mTiles)
@@ -43,7 +56,12 @@ namespace ViperCraft
 				for (auto tile : z)
 				{
 					if (tile && tile->getName() != "air") // maybe add tile ids or something to check against here
-						tile->draw(mRenderBuffer, position, renderQueue);
+					{
+						if (tile->isLiquid())
+							tile->draw(mTransparentRenderBuffer, position, renderQueue);
+						else
+							tile->draw(mRenderBuffer, position, renderQueue);
+					}
 					position.z += 1;
 				}
 				position.z = mPosition.z;
@@ -54,5 +72,6 @@ namespace ViperCraft
 		}
 
 		renderQueue->bindModels(mRenderBuffer);
+		renderQueue->bindModels(mTransparentRenderBuffer);
 	}
 }

@@ -39,6 +39,7 @@ namespace ViperCraft
 	private:
 		ViperGL::Window mWindow;
 		ViperGL::RenderQueue mRenderQueue;
+		ViperGL::UIRenderQueue mUIRenderQueue;
 
 		std::vector<std::function<void(double)> > mOnTickHandlers;
 

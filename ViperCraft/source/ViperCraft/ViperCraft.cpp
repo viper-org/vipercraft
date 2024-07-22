@@ -18,7 +18,7 @@ namespace ViperCraft
 		}
 
 		ViperGL::WindowErrorCode windowErrorCode;
-		mWindow = ViperGL::Window(1920, 1080, "Viper Craft 0.0.1", windowErrorCode);
+		mWindow = ViperGL::Window(1920, 1080, "Viper Craft 0.0.2", windowErrorCode);
 		if (windowErrorCode != ViperGL::WindowErrorCode::Success)
 		{
 			errorCode = ViperCraftErrorCode::WindowFailed;
@@ -32,6 +32,7 @@ namespace ViperCraft
 		}
 		mWindow.postInit(); // stuff that requires glad to be loaded
 		mRenderQueue.init("atlas");
+		mUIRenderQueue.init(mWindow.getAspectRatio());
 
 		Input::InitInputManager(&mWindow);
 		Input::SetCursorLocked(true);
@@ -101,6 +102,7 @@ namespace ViperCraft
 	void ViperCraft::render()
 	{
 		mWorld.render();
+		mUIRenderQueue.draw();
 	}
 
 	void ViperCraft::postEvents(double deltaTime)
@@ -114,7 +116,15 @@ namespace ViperCraft
 
 	void ViperCraft::initGame()
 	{
+		srand(time(NULL)); // randomly generate a seed for now
 		World::Generate(mWorld, (unsigned long long)rand() * rand());
 		mPlayer.init();
+
+		mUIRenderQueue.reset();
+		// draw crosshair
+		mUIRenderQueue.line(glm::vec2(-0.03f, 0.f), glm::vec2(0.03f, 0.f));
+		mUIRenderQueue.line(glm::vec2(0.f, -0.03f), glm::vec2(0.f, 0.03f));
+
+		mUIRenderQueue.bind();
 	}
 }

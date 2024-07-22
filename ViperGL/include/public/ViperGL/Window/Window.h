@@ -32,6 +32,7 @@ namespace ViperGL
 
 		unsigned int getWidth() const;
 		unsigned int getHeight() const;
+		float getAspectRatio() const;
 		std::string_view getTitle() const;
 		GLFWwindow* getWindowCtx() const;
 

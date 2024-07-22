@@ -17,9 +17,11 @@ namespace ViperCraft
 		Chunk(glm::vec3 position);
 
 		void beginRendering();
+		void draw();
 
 		void chunkUpdated();
 
+		glm::vec3 getPosition();
 		Tile*& getTile(glm::vec3 position);
 
 	private:
@@ -28,6 +30,6 @@ namespace ViperCraft
 		glm::vec3 mPosition; // bottom left back side
 
 		int mRenderBuffer;
-
+		int mTransparentRenderBuffer;
 	};
 }

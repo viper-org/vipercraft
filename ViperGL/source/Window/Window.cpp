@@ -45,6 +45,8 @@ namespace ViperGL
 		glViewport(0, 0, fWidth, fHeight);
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glClearColor(0.53f, 0.81f, 0.92f, 1.f);
 
 		glfwSetMouseButtonCallback(mWindowCtx, mouseButtonCallback);
@@ -92,6 +94,11 @@ namespace ViperGL
 	unsigned int Window::getHeight() const
 	{
 		return mHeight;
+	}
+
+	float Window::getAspectRatio() const
+	{
+		return (float)mWidth / (float)mHeight;
 	}
 
 	std::string_view Window::getTitle() const

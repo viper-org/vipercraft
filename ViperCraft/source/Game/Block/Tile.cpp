@@ -80,6 +80,15 @@ namespace ViperCraft
 			ViperGL::TextureCoords{2,2},
 			ViperGL::TextureCoords{2,2},
 		}, "leaves")},
+
+		{ "gravel", Tile({
+			ViperGL::TextureCoords{3,1},
+			ViperGL::TextureCoords{3,1},
+			ViperGL::TextureCoords{3,1},
+			ViperGL::TextureCoords{3,1},
+			ViperGL::TextureCoords{3,1},
+			ViperGL::TextureCoords{3,1},
+		}, "gravel")},
 	};
 
 	Tile::Tile()
@@ -106,7 +115,7 @@ namespace ViperCraft
 			if (chunk)
 			{
 				auto tile = chunk->getTile(position + glm::vec3(0, facing, 0));
-				if (tile && tile->isSolidTile()) continue;
+				if (tile && (tile->isSolidTile() || (isLiquid() && tile->isLiquid()))) continue;
 			}
 
 			std::array<glm::vec3, 4> corners;
@@ -114,7 +123,7 @@ namespace ViperCraft
 			corners[abs((i*3)-2)] = position + glm::vec3(1, height * i, 1);
 			corners[abs((i*3)-1)] = position + glm::vec3(1, height * i, 0);
 			corners[abs((i*3)-0)] = position + glm::vec3(0, height * i, 0);
-			renderQueue->quad(renderBuffer, corners, glm::vec2(mFaceTextures[i].x, mFaceTextures[i].y), 1.f);
+			renderQueue->quad(renderBuffer, corners, glm::vec2(mFaceTextures[i].x, mFaceTextures[i].y), 1.f, isLiquid()?0.6f:1.f);
 		}
 		// left and right
 		for (int i = 0; i < 2; ++i)
@@ -124,7 +133,7 @@ namespace ViperCraft
 			if (chunk)
 			{
 				auto tile = chunk->getTile(position + glm::vec3(facing, 0, 0));
-				if (tile && tile->isSolidTile()) continue;
+				if (tile && (tile->isSolidTile() || (isLiquid() && tile->isLiquid()))) continue;
 			}
 
 			std::array<glm::vec3, 4> corners;
@@ -132,7 +141,7 @@ namespace ViperCraft
 			corners[abs((i*3)-3)] = position + glm::vec3(i, height, 1);
 			corners[abs((i*3)-0)] = position + glm::vec3(i, height, 0);
 			corners[abs((i*3)-1)] = position + glm::vec3(i, 0, 0);
-			renderQueue->quad(renderBuffer, corners, glm::vec2(mFaceTextures[i+2].x, mFaceTextures[i+2].y), .6f);
+			renderQueue->quad(renderBuffer, corners, glm::vec2(mFaceTextures[i+2].x, mFaceTextures[i+2].y), .6f, isLiquid() ? 0.6f : 1.f);
 		}
 		// front and back
 		for (int i = 0; i < 2; ++i)
@@ -142,7 +151,7 @@ namespace ViperCraft
 			if (chunk)
 			{
 				auto tile = chunk->getTile(position + glm::vec3(0, 0, facing));
-				if (tile && tile->isSolidTile()) continue;
+				if (tile && (tile->isSolidTile() || (isLiquid() && tile->isLiquid()))) continue;
 			}
 
 			std::array<glm::vec3, 4> corners;
@@ -150,7 +159,7 @@ namespace ViperCraft
 			corners[abs((i*3)-0)] = position + glm::vec3(1, height, i);
 			corners[abs((i*3)-1)] = position + glm::vec3(1, 0, i);
 			corners[abs((i*3)-2)] = position + glm::vec3(0, 0, i);
-			renderQueue->quad(renderBuffer, corners, glm::vec2(mFaceTextures[i+4].x, mFaceTextures[i+4].y), .8f);
+			renderQueue->quad(renderBuffer, corners, glm::vec2(mFaceTextures[i+4].x, mFaceTextures[i+4].y), .8f, isLiquid() ? 0.6f : 1.f);
 		}
 	}
 

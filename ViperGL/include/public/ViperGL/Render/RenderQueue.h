@@ -27,13 +27,13 @@ namespace ViperGL
 
 	private:
 		void resetModels();
-		void quad(std::array<glm::vec3, 4> corners, glm::vec2 texCoords, float light);
+		void quad(std::array<glm::vec3, 4> corners, glm::vec2 texCoords, float light, float alpha);
 		void bindModels();
 
 		RenderQueue* mParent;
 		int mId;
 
-		std::vector<float> mVertices; // x, y, z, w, tex_x, tex_y
+		std::vector<float> mVertices; // x, y, z, tex_x, tex_y
 		std::vector<unsigned int> mIndices;
 
 		unsigned int mVAO;
@@ -54,10 +54,11 @@ namespace ViperGL
 		void removeBuffer(int buffer);
 
 		void resetModels(int bufferId);
-		void quad(int bufferId, std::array<glm::vec3, 4> corners, glm::vec2 texCoords, float light);
+		void quad(int bufferId, std::array<glm::vec3, 4> corners, glm::vec2 texCoords, float light, float alpha);
 		void bindModels(int bufferId);
 
-		void draw();
+		void prepareDraw();
+		void draw(int bufferId);
 
 	private:
 		std::unique_ptr<ShaderProgram> mMainShader;
@@ -68,5 +69,32 @@ namespace ViperGL
 		std::vector<RenderBuffer> mBuffers;
 
 		RenderBuffer* findBuffer(int bufferId);
+	};
+
+	class UIRenderQueue
+	{
+	public:
+		UIRenderQueue();
+		~UIRenderQueue();
+
+		void init(float aspectRatio);
+
+		void reset();
+		void line(glm::vec2 from, glm::vec2 to);
+		void bind();
+
+		void draw();
+
+	private:
+		std::unique_ptr<ShaderProgram> mShader;
+
+		glm::mat4 mOrtho;
+
+		std::vector<float> mVertices; // x, y
+		std::vector<unsigned int> mIndices;
+
+		unsigned int mVAO;
+		unsigned int mVBO;
+		unsigned int mEBO;
 	};
 }

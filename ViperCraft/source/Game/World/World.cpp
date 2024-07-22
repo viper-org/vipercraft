@@ -4,7 +4,7 @@
 
 #include <stb_perlin/stb_perlin.h>
 
-#include <iostream>
+#include <algorithm>
 
 namespace ViperCraft
 {
@@ -26,14 +26,44 @@ namespace ViperCraft
 
 	void World::render()
 	{
-		ViperCraft::GetInstance()->getRenderQueue()->draw();
+		ViperCraft::GetInstance()->getRenderQueue()->prepareDraw();
+
+		// we can probably do all of this only when the player moves but for now its fine
+		auto playerPos = ViperCraft::GetInstance()->getPlayer()->getPosition();
+		std::vector<std::vector<Chunk*> > sortedChunks;
+		for (auto& chunks : mLoadedChunks)
+		{
+			sortedChunks.push_back(std::vector<Chunk*>());
+			for (auto& chunk : chunks)
+			{
+				sortedChunks.back().push_back(&chunk);
+			}
+		}
+
+		std::sort(sortedChunks.begin(), sortedChunks.end(), [this, &playerPos](const std::vector<Chunk*>& a, const std::vector<Chunk*>& b) {
+			return (glm::length(a.front()->getPosition().x - playerPos.x)) > (glm::length(b.front()->getPosition().x - playerPos.x));
+		});
+		for (auto& chunks : sortedChunks)
+		{
+			std::sort(chunks.begin(), chunks.end(), [this, &playerPos](Chunk* a, Chunk* b) {
+				return (glm::length(a->getPosition().z - playerPos.z)) > (glm::length(b->getPosition().z - playerPos.z));
+			});
+		}
+
+		for (auto& chunks : sortedChunks)
+		{
+			for (auto& chunk : chunks)
+			{
+				chunk->draw();
+			}
+		}
 	}
 
 
 	void World::Generate(World& world, unsigned long long seed)
 	{
 		constexpr int WORLD_SIZE = 8;
-		constexpr float WORLDGEN_INTENSITY = 7.5f;
+		constexpr float WORLDGEN_INTENSITY = 5.f;
 		constexpr float center = float(WORLD_SIZE * 16) / 2;
 
 		srand(seed);
@@ -56,11 +86,11 @@ namespace ViperCraft
 				{
 					for (int j = 0; j < 16; ++j)
 					{
-						auto height = floor((
+						auto height = (
 							stb_perlin_noise3_seed((chunk.mPosition.x + i) / 16, (chunk.mPosition.z + j) / 16, .2f, 0, 0, 0, seed) +
-							stb_perlin_noise3_seed((chunk.mPosition.x + i) / 16, (chunk.mPosition.z + j) / 16, .5f, 0, 0, 0, seed) -
-							stb_perlin_noise3_seed((chunk.mPosition.x + i) / 16, (chunk.mPosition.z + j) / 16, .7f, 0, 0, 0, seed) 
-							) * WORLDGEN_INTENSITY + 60);
+							stb_perlin_noise3_seed((chunk.mPosition.x + i) / 16, (chunk.mPosition.z + j) / 16, .9f, 0, 0, 0, seed) -
+							stb_perlin_noise3_seed((chunk.mPosition.x + i) / 16, (chunk.mPosition.z + j) / 16, .7f, 0, 0, 0, seed)
+							) * WORLDGEN_INTENSITY + 60;
 						chunk.mHeights[i + j * 16] = height;
 
 						chunk.getTile(glm::vec3(chunk.mPosition.x + i, height, chunk.mPosition.z + j)) = Tile::GetTile("grass_block");
@@ -98,7 +128,7 @@ namespace ViperCraft
 						// probably shouldnt be regenerating this but oh well
 						auto height = chunk.mHeights[i + j * 16];
 						glm::vec2 position = glm::vec2(chunk.mPosition.x + i, chunk.mPosition.z + j);
-						GenerateTree(chunk, height, position);
+						GenerateTree(world, chunk, height, position);
 					}
 				}
 				delete[] chunk.mHeights;
@@ -120,17 +150,21 @@ namespace ViperCraft
 
 	void World::GenerateWater(Chunk& chunk, float height, glm::vec2 position)
 	{
-		if (height < 60)
+		constexpr float WATER_HEIGHT = 59;
+		if (height < WATER_HEIGHT)
 		{
-			std::string block = (height >= 59.f) ? "sand" : "water";
-			for (int y = height; y < 60; ++y)
+			bool generateWater = !(height >= WATER_HEIGHT - .6);
+			std::string block = generateWater ? "water" : "sand";
+			for (int y = height; y < WATER_HEIGHT; ++y)
 			{
 				chunk.getTile(glm::vec3(position.x, y, position.y)) = Tile::GetTile(block);
 			}
+			if (generateWater)
+				chunk.getTile(glm::vec3(position.x, height-1, position.y)) = Tile::GetTile("gravel");
 		}
 	}
 
-	void World::GenerateTree(Chunk& chunk, float height, glm::vec2 position)
+	void World::GenerateTree(World& world, Chunk& chunk, float height, glm::vec2 position)
 	{
 		if (chunk.getTile(glm::vec3(position.x, height, position.y))->getName() != "grass_block") return; // trees can only be generated on grass
 		constexpr std::array<glm::vec3, 8> surroundings = {
@@ -143,28 +177,89 @@ namespace ViperCraft
 			glm::vec3(0, 0, -1),
 			glm::vec3(-1, 0, -1),
 		};
+		constexpr float TREE_LIKELIHOOD = 0.999;
 
-		if (rand() >= RAND_MAX * 0.976f) // put a tree at this coordinate
+		if (rand() >= RAND_MAX * TREE_LIKELIHOOD)
 		{
 			for (const auto& surrounding : surroundings)
 			{
-				auto currChunk = ViperCraft::GetInstance()->getWorld()->getPositionChunk(glm::vec3(position.x, height + 1, position.y) + surrounding);
+				auto currChunk = world.getPositionChunk(glm::vec3(position.x, height + 1, position.y) + surrounding);
 				if (!currChunk) continue;
 				if (currChunk->getTile(glm::vec3(position.x, height + 1, position.y) + surrounding) != nullptr) return;
 			}
+			PlaceTree(world, glm::vec3(position.x, height + 1, position.y));
+		}
+	}
 
-			for (int y = 1; y < 7; ++y)
+	void World::PlaceTree(World& world, glm::vec3 position)
+	{
+		constexpr std::array<glm::vec3, 8> immediate_surroundings = {
+			// immediate surroundings
+			glm::vec3(-1, 0, 0),
+			glm::vec3(-1, 0, 1),
+			glm::vec3(0, 0, 1),
+			glm::vec3(1, 0, 1),
+			glm::vec3(1, 0, 0),
+			glm::vec3(1, 0, -1),
+			glm::vec3(0, 0, -1),
+			glm::vec3(-1, 0, -1),
+		};
+		constexpr std::array<glm::vec3, 5> plus = {
+			glm::vec3(0, 0, 0),
+			glm::vec3(-1, 0, 0),
+			glm::vec3(1, 0, 0),
+			glm::vec3(0, 0, 1),
+			glm::vec3(0, 0, -1),
+		};
+		constexpr std::array<glm::vec3, 12> second_surroundings = {
+			glm::vec3(0, 0, -2),
+			glm::vec3(1, 0, -2),
+			glm::vec3(2, 0, -1),
+			glm::vec3(2, 0, 0),
+			glm::vec3(2, 0, 1),
+			glm::vec3(1, 0, 2),
+			glm::vec3(0, 0, 2),
+			glm::vec3(-1, 0, 2),
+			glm::vec3(-2, 0, 1),
+			glm::vec3(-2, 0, 0),
+			glm::vec3(-2, 0, -1),
+			glm::vec3(-1, 0, -2)
+		};
+		int tree_height = (rand() % 2 == 0) ? 7 : 6;
+
+		auto trunkChunk = world.getPositionChunk(position);
+		for (int y = 0; y < tree_height; ++y)
+		{
+			trunkChunk->getTile(glm::vec3(position.x, position.y + y, position.z)) = Tile::GetTile("wood");
+		}
+
+		// draw the leaves directly around the log
+		for (int y = 3; y < tree_height-1; ++y)
+		{
+			for (const auto& leaf : immediate_surroundings)
 			{
-				chunk.getTile(glm::vec3(position.x, height + y, position.y)) = Tile::GetTile("wood");
+				auto currChunk = ViperCraft::GetInstance()->getWorld()->getPositionChunk(glm::vec3(position.x, position.y + y, position.z) + leaf);
+				if (!currChunk) continue;
+				currChunk->getTile(glm::vec3(position.x, position.y + y, position.z) + leaf) = Tile::GetTile("leaves");
 			}
-			for (int y = 3; y < 7; ++y)
+		}
+
+		// draw the plus on top
+		for (const auto& leaf : plus)
+		{
+			auto currChunk = ViperCraft::GetInstance()->getWorld()->getPositionChunk(glm::vec3(position.x, position.y + tree_height - 1, position.z) + leaf);
+			if (!currChunk) continue;
+			currChunk->getTile(glm::vec3(position.x, position.y + tree_height - 1, position.z) + leaf) = Tile::GetTile("leaves");
+		}
+
+		// draw the last layer of leaves
+		for (int y = tree_height-4; y < tree_height-2; ++y)
+		{
+			for (const auto& leaf : second_surroundings)
 			{
-				for (const auto& surrounding : surroundings)
-				{
-					auto currChunk = ViperCraft::GetInstance()->getWorld()->getPositionChunk(glm::vec3(position.x, height + y, position.y) + surrounding);
-					if (!currChunk) continue;
-					currChunk->getTile(glm::vec3(position.x, height + y, position.y) + surrounding) = Tile::GetTile("leaves");
-				}
+				auto currChunk = ViperCraft::GetInstance()->getWorld()->getPositionChunk(glm::vec3(position.x, position.y + y, position.z) + leaf);
+				if (!currChunk) continue;
+				currChunk->getTile(glm::vec3(position.x, position.y + y, position.z) + leaf) = Tile::GetTile("leaves");
 			}
 		}
 	}

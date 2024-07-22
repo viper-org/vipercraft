@@ -21,6 +21,7 @@ namespace ViperCraft
 		std::vector<std::vector<Chunk> > mLoadedChunks; // x, z - only chunks that are to be rendered, other chunks are loaded when needed
 
 		static void GenerateWater(Chunk& chunk, float height, glm::vec2 position);
-		static void GenerateTree(Chunk& chunk, float height, glm::vec2 position);
+		static void GenerateTree(World& world, Chunk& chunk, float height, glm::vec2 position);
+		static void PlaceTree(World& world, glm::vec3 position);
 	};
 }
