@@ -72,6 +72,7 @@ namespace ViperCraft
 
 			auto doCollision = [this, playerBB, &axis](const glm::vec3& position) {
 				auto chunk = ViperCraft::GetInstance()->getWorld()->getPositionChunk(position);
+				if (!chunk) return;
 				auto tile = chunk->getTile(position);
 				if (!tile || !tile->isSolidTile()) return;
 
@@ -228,8 +229,7 @@ namespace ViperCraft
 
 	bool PlayerController::isPlayerInWater()
 	{
-		auto chunk = ViperCraft::GetInstance()->getWorld()->getPositionChunk(mParent.mPosition);
-		auto tile = chunk->getTile(mParent.mPosition);
+		auto tile = ViperCraft::GetInstance()->getWorld()->getTile(mParent.mPosition);
 		if (!tile || !tile->isLiquid()) return false;
 		return true;
 	}

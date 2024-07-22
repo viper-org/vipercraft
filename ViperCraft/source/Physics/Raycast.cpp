@@ -50,13 +50,16 @@ namespace ViperCraft
 			while (glm::distance(position, origin) <= maxDist)
 			{
 				auto chunk = ViperCraft::GetInstance()->getWorld()->getPositionChunk(position);
-				auto tile = chunk->getTile(position);
-				if (tile && tile->isSolidTile())
+				if (chunk)
 				{
-					hit.point = position;
-					auto blockCenter = floor(position) + 0.5f;
-					hit.normal = GetNormal(blockCenter, position);
-					return true;
+					auto tile = chunk->getTile(position);
+					if (tile && tile->isSolidTile())
+					{
+						hit.point = position;
+						auto blockCenter = floor(position) + 0.5f;
+						hit.normal = GetNormal(blockCenter, position);
+						return true;
+					}
 				}
 
 				position += direction * RAY_STEP;

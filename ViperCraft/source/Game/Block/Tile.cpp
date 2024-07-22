@@ -89,6 +89,15 @@ namespace ViperCraft
 			ViperGL::TextureCoords{3,1},
 			ViperGL::TextureCoords{3,1},
 		}, "gravel")},
+
+		{ "coal_ore", Tile({
+			ViperGL::TextureCoords{0,3},
+			ViperGL::TextureCoords{0,3},
+			ViperGL::TextureCoords{0,3},
+			ViperGL::TextureCoords{0,3},
+			ViperGL::TextureCoords{0,3},
+			ViperGL::TextureCoords{0,3},
+		}, "coal_ore")},
 	};
 
 	Tile::Tile()
@@ -111,10 +120,9 @@ namespace ViperCraft
 		for (int i = 0; i < 2; ++i)
 		{
 			auto facing = -1 + 2 * i;
-			auto chunk = world->getPositionChunk(position + glm::vec3(0, facing, 0));
-			if (chunk)
+			if (position.y + facing >= 0) // always generate the very bottom of the world
 			{
-				auto tile = chunk->getTile(position + glm::vec3(0, facing, 0));
+				auto tile = world->getTile(position + glm::vec3(0, facing, 0));
 				if (tile && (tile->isSolidTile() || (isLiquid() && tile->isLiquid()))) continue;
 			}
 
@@ -129,12 +137,8 @@ namespace ViperCraft
 		for (int i = 0; i < 2; ++i)
 		{
 			auto facing = -1 + 2 * i;
-			auto chunk = world->getPositionChunk(position + glm::vec3(facing, 0, 0));
-			if (chunk)
-			{
-				auto tile = chunk->getTile(position + glm::vec3(facing, 0, 0));
-				if (tile && (tile->isSolidTile() || (isLiquid() && tile->isLiquid()))) continue;
-			}
+			auto tile = world->getTile(position + glm::vec3(facing, 0, 0));
+			if (tile && (tile->isSolidTile() || (isLiquid() && tile->isLiquid()))) continue;
 
 			std::array<glm::vec3, 4> corners;
 			corners[abs((i*3)-2)] = position + glm::vec3(i, 0, 1);
@@ -147,12 +151,8 @@ namespace ViperCraft
 		for (int i = 0; i < 2; ++i)
 		{
 			auto facing = -1 + 2 * i;
-			auto chunk = world->getPositionChunk(position + glm::vec3(0, 0, facing));
-			if (chunk)
-			{
-				auto tile = chunk->getTile(position + glm::vec3(0, 0, facing));
-				if (tile && (tile->isSolidTile() || (isLiquid() && tile->isLiquid()))) continue;
-			}
+			auto tile = world->getTile(position + glm::vec3(0, 0, facing));
+			if (tile && (tile->isSolidTile() || (isLiquid() && tile->isLiquid()))) continue;
 
 			std::array<glm::vec3, 4> corners;
 			corners[abs((i*3)-3)] = position + glm::vec3(0, height, i);

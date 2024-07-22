@@ -9,7 +9,7 @@ set(SOURCES
 
 	"source/Game/Block/Tile.cpp"
 	"source/Game/Block/Chunk.cpp"
- "source/Game/World/World.cpp" "source/Game/Player/PlayerController.cpp" "source/Game/Player/Player.cpp" "source/Physics/Collider.cpp")
+ "source/Game/World/World.cpp" "source/Game/Player/PlayerController.cpp" "source/Game/Player/Player.cpp" "source/Physics/Collider.cpp" "source/Game/World/Sky.cpp")
 
 set(HEADERS
 	"include/ViperCraft/ViperCraft.h"
@@ -18,7 +18,7 @@ set(HEADERS
 	
 	"include/Game/Block/Tile.h"
 	"include/Game/Block/Chunk.h"
- "include/Game/World/World.h" "include/Game/Player/PlayerController.h" "include/Game/Player/Player.h" "include/Physics/Collider.h" "include/Physics/Raycast.h" "source/Physics/Raycast.cpp")
+ "include/Game/World/World.h" "include/Game/Player/PlayerController.h" "include/Game/Player/Player.h" "include/Physics/Collider.h" "include/Physics/Raycast.h" "source/Physics/Raycast.cpp" "include/Game/World/Sky.h")
 
 set(DEP_SOURCES
 	"deps/stb_perlin/stb_perlin.cpp"

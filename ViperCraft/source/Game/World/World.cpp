@@ -5,6 +5,7 @@
 #include <stb_perlin/stb_perlin.h>
 
 #include <algorithm>
+#include <iostream>
 
 namespace ViperCraft
 {
@@ -12,9 +13,18 @@ namespace ViperCraft
 	{
 	}
 
+	Tile* World::getTile(glm::vec3 position)
+	{
+		Chunk* chunk = getPositionChunk(position);
+		if (!chunk) return nullptr;
+		return chunk->getTile(position);
+	}
+
 	Chunk* World::getPositionChunk(glm::vec3 position)
 	{
 		glm::vec3 offset = mLoadedChunks[0][0].mPosition - position;
+		if (position.x < mLoadedChunks[0][0].mPosition.x) return nullptr;
+		if (position.z < mLoadedChunks[0][0].mPosition.z) return nullptr;
 		
 		offset.x /= 16;
 		offset.z /= 16;
@@ -57,12 +67,13 @@ namespace ViperCraft
 				chunk->draw();
 			}
 		}
+		mSky.draw();
 	}
 
 
+	constexpr int WORLD_SIZE = 2;
 	void World::Generate(World& world, unsigned long long seed)
 	{
-		constexpr int WORLD_SIZE = 8;
 		constexpr float WORLDGEN_INTENSITY = 5.f;
 		constexpr float center = float(WORLD_SIZE * 16) / 2;
 
@@ -137,12 +148,46 @@ namespace ViperCraft
 			chunkPosition.z = 0;
 		}
 
+		GenerateCaves(world, seed);
+
 		ViperCraft::GetInstance()->setPlayerSpawn(playerSpawn);
 		for (auto& chunks : world.mLoadedChunks)
 		{
 			for (auto& chunk : chunks)
 			{
 				chunk.chunkUpdated();
+			}
+		}
+
+		world.mSky.addClouds(seed, glm::vec2(WORLD_SIZE * 16));
+	}
+
+	void World::GenerateCaves(World& world, unsigned long long seed)
+	{
+		for (float x = 0; x < WORLD_SIZE * 16; ++x)
+		{
+			for (float y = 0; y < 256; ++y)
+			{
+				for (float z = 0; z < WORLD_SIZE * 16; ++z)
+				{
+					auto noise = (
+						stb_perlin_noise3_seed(x / 16, y / 16, z / 16, 0, 0, 0, seed) *
+						stb_perlin_noise3_seed(x / 8, y / 8, z / 8, 0, 0, 0, seed)
+						);
+					if (noise >= 0.1f)
+					{
+						auto chunk = world.getPositionChunk(glm::vec3(x, y, z));
+						chunk->getTile(glm::vec3(x, y, z)) = nullptr; // air
+					}
+					else if (noise >= 0.0997f || noise <= -0.14f)
+					{
+						if (y < 57)
+						{
+							auto chunk = world.getPositionChunk(glm::vec3(x, y, z));
+							chunk->getTile(glm::vec3(x, y, z)) = Tile::GetTile("coal_ore");
+						}
+					}
+				}
 			}
 		}
 	}
