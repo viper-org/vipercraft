@@ -8,6 +8,7 @@ namespace ViperCraft
 		: mTiles{0}
 		, mPosition(glm::vec3(0.f))
 		, mRenderBuffer(-1)
+		, mTransparentRenderBuffer(-1)
 	{
 	}
 
@@ -15,6 +16,7 @@ namespace ViperCraft
 		: mTiles{0}
 		, mPosition(position)
 		, mRenderBuffer(-1)
+		, mTransparentRenderBuffer(-1)
 	{
 	}
 

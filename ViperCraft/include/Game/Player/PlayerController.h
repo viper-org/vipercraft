@@ -35,5 +35,6 @@ namespace ViperCraft
 
 		void checkGroundedness(double deltaTime);
 		bool isPlayerGroundedAt(glm::vec3 position);
+		bool isPlayerInWater();
 	};
 }

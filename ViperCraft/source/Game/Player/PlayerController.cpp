@@ -139,7 +139,7 @@ namespace ViperCraft
 			move += step;
 		}
 
-		if (isPlayerGroundedAt(mParent.mPosition) && Input::GetButtonDown(Input::Key::Space))
+		if ((isPlayerGroundedAt(mParent.mPosition) || isPlayerInWater()) && Input::GetButtonDown(Input::Key::Space))
 		{
 			constexpr float JUMP_FORCE = 150;
 			mAcceleration.y += JUMP_FORCE * mParent.mJumpHeight;
@@ -199,7 +199,16 @@ namespace ViperCraft
 	{
 		if (!isPlayerGroundedAt(mParent.mPosition + glm::vec3(0.f, mVelocity.y, 0.f) * (float)deltaTime))
 		{
-			mAcceleration.y -= 15.f;
+			if (isPlayerInWater())
+			{
+				mParent.mJumpHeight = 1.5f;
+				mAcceleration.y = -100.f;
+			}
+			else
+			{
+				mParent.mJumpHeight = 1.25f;
+				mAcceleration.y -= 15.f;
+			}
 			mParent.mMoveSpeed = 2.f;
 		}
 		else
@@ -213,11 +222,15 @@ namespace ViperCraft
 	{
 		Physics::RaycastHit hit;
 		return (
-			Physics::RaycastSolid(position, glm::vec3(0.f, -1.f, 0.f),   0.3f, hit) //||
-			//Physics::RaycastSolid(position, glm::vec3(0.5f, -1.f, 0.f),  0.3f, hit) ||
-			//Physics::RaycastSolid(position, glm::vec3(-0.5f, -1.f, 0.f), 0.3f, hit) ||
-			//Physics::RaycastSolid(position, glm::vec3(0.f, -1.f, 0.5f),  0.3f, hit) ||
-			//Physics::RaycastSolid(position, glm::vec3(0.f, -1.f, -0.5f), 0.3f, hit)
+			Physics::RaycastSolid(position, glm::vec3(0.f, -1.f, 0.f),   0.3f, hit)
 		);
+	}
+
+	bool PlayerController::isPlayerInWater()
+	{
+		auto chunk = ViperCraft::GetInstance()->getWorld()->getPositionChunk(mParent.mPosition);
+		auto tile = chunk->getTile(mParent.mPosition);
+		if (!tile || !tile->isLiquid()) return false;
+		return true;
 	}
 }
