@@ -22,7 +22,7 @@ set(SOURCES
 	
 	
 	"source/Render/Cam.cpp"
-)
+ "source/Render/UI.cpp")
 
 set(HEADERS
 	"include/public/ViperGL/Window/Window.h"
@@ -45,14 +45,14 @@ set(HEADERS
 
 	"include/Vertex/VertexObject.h"
 	"include/Vertex/ElementBuffer.h"
-)
+ "include/public/ViperGL/Render/UI.h")
 
 set(DEP_SOURCES
 	"deps/glad/src/glad.c"
 )
 source_group(TREE ${PROJECT_SOURCE_DIR} FILES ${SOURCES} ${HEADERS} ${DEP_SOURCES})
 
-add_library (ViperGL ${SOURCES} ${HEADERS} ${DEP_SOURCES})
+add_library (ViperGL ${SOURCES} ${HEADERS} ${DEP_SOURCES} "source/Render/UI.cpp")
 target_include_directories(ViperGL PUBLIC include/public)
 
 target_compile_features(ViperGL PUBLIC cxx_std_20)

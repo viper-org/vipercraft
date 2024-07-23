@@ -4,6 +4,8 @@
 
 #include <Input/Input.h>
 
+#include <ViperGL/Render/UI.h>
+
 #include <glad/glad.h>
 
 namespace ViperCraft
@@ -32,7 +34,7 @@ namespace ViperCraft
 		}
 		mWindow.postInit(); // stuff that requires glad to be loaded
 		mRenderQueue.init("atlas");
-		mUIRenderQueue.init(mWindow.getAspectRatio());
+		ViperGL::UI::InitUIRenderer(mWindow.getAspectRatio());
 
 		Input::InitInputManager(&mWindow);
 		Input::SetCursorLocked(true);
@@ -102,7 +104,11 @@ namespace ViperCraft
 	void ViperCraft::render()
 	{
 		mWorld.render();
-		mUIRenderQueue.draw();
+
+		// TODO: Move this
+		ViperGL::UI::PreDraw();
+		ViperGL::UI::DrawLine(glm::vec2(-0.03f, 0.f), glm::vec2(0.03f, 0.f), ViperGL::Colors::White);
+		ViperGL::UI::DrawLine(glm::vec2(0.f, -0.03f), glm::vec2(0.f, 0.03f), ViperGL::Colors::White);
 	}
 
 	void ViperCraft::postEvents(double deltaTime)
@@ -121,12 +127,5 @@ namespace ViperCraft
 		srand(time(NULL)); // randomly generate a seed for now
 		World::Generate(mWorld, (unsigned long long)rand() * rand());
 		mPlayer.init();
-
-		mUIRenderQueue.reset();
-		// draw crosshair
-		mUIRenderQueue.line(glm::vec2(-0.03f, 0.f), glm::vec2(0.03f, 0.f), ViperGL::Colors::White);
-		mUIRenderQueue.line(glm::vec2(0.f, -0.03f), glm::vec2(0.f, 0.03f), ViperGL::Colors::White);
-
-		mUIRenderQueue.bind();
 	}
 }

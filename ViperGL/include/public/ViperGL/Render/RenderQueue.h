@@ -78,31 +78,4 @@ namespace ViperGL
 
 		RenderBuffer* findBuffer(int bufferId);
 	};
-
-	class UIRenderQueue
-	{
-	public:
-		UIRenderQueue();
-		~UIRenderQueue();
-
-		void init(float aspectRatio);
-
-		void reset();
-		void line(glm::vec2 from, glm::vec2 to, Color);
-		void bind();
-
-		void draw();
-
-	private:
-		std::unique_ptr<ShaderProgram> mShader;
-
-		glm::mat4 mOrtho;
-
-		std::vector<float> mVertices; // x, y
-		std::vector<unsigned int> mIndices;
-
-		unsigned int mVAO;
-		unsigned int mVBO;
-		unsigned int mEBO;
-	};
 }
