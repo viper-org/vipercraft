@@ -33,6 +33,7 @@ namespace ViperGL
 		
 		void onKeyDown(std::function<void(Input::Key)> func);
 		void onMouseButtonDown(int button, std::function<void()> func);
+		void onMouseButtonUp(int button, std::function<void()> func);
 
 		double getDeltaTime();
 

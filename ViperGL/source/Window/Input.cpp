@@ -374,6 +374,11 @@ namespace ViperGL
 			window.onMouseButtonDown(GLFWMouseButton(button), func);
 		}
 
+		void OnMouseButtonUp(Window& window, MouseButton button, std::function<void()> func)
+		{
+			window.onMouseButtonUp(GLFWMouseButton(button), func);
+		}
+
 		float GetMouseAxis(Window& window, MouseAxis axis)
 		{
 			constexpr float SENSITIVITY = 20.f;

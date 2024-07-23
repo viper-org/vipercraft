@@ -79,10 +79,16 @@ namespace ViperGL
 		keyHandlers.push_back(func);
 	}
 
-	std::unordered_map<int, std::vector<std::function<void()> > > mouseHandlers;
+	std::unordered_map<int, std::vector<std::function<void()> > > mouseDownHandlers;
 	void Window::onMouseButtonDown(int button, std::function<void()> func)
 	{
-		mouseHandlers[button].push_back(func);
+		mouseDownHandlers[button].push_back(func);
+	}
+
+	std::unordered_map<int, std::vector<std::function<void()> > > mouseUpHandlers;
+	void Window::onMouseButtonUp(int button, std::function<void()> func)
+	{
+		mouseUpHandlers[button].push_back(func);
 	}
 
 	double Window::getDeltaTime()
@@ -134,7 +140,14 @@ namespace ViperGL
 	{
 		if (action == GLFW_PRESS)
 		{
-			for (auto& func : mouseHandlers[button])
+			for (auto& func : mouseDownHandlers[button])
+			{
+				func();
+			}
+		}
+		else if (action == GLFW_RELEASE)
+		{
+			for (auto& func : mouseUpHandlers[button])
 			{
 				func();
 			}
