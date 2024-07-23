@@ -109,6 +109,7 @@ namespace ViperCraft
 		ViperGL::UI::PreDraw();
 		ViperGL::UI::DrawLine(glm::vec2(-0.03f, 0.f), glm::vec2(0.03f, 0.f), ViperGL::Colors::White);
 		ViperGL::UI::DrawLine(glm::vec2(0.f, -0.03f), glm::vec2(0.f, 0.03f), ViperGL::Colors::White);
+		ViperGL::UI::DrawQuad({ -0.5f, -.5f }, { -.5f, -.4f }, { -.4f, -.5f }, { -.4f, -.4f }, ViperGL::Colors::Black);
 	}
 
 	void ViperCraft::postEvents(double deltaTime)

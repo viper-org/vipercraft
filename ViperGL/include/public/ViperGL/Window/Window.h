@@ -8,6 +8,11 @@
 
 namespace ViperGL
 {
+	namespace Input
+	{
+		enum class Key;
+	}
+
 	enum WindowErrorCode
 	{
 		Success=0,
@@ -25,8 +30,10 @@ namespace ViperGL
 		bool shouldClose() const;
 		void clear();
 		void mainLoop();
-
+		
+		void onKeyDown(std::function<void(Input::Key)> func);
 		void onMouseButtonDown(int button, std::function<void()> func);
+		void onMouseButtonUp(int button, std::function<void()> func);
 
 		double getDeltaTime();
 
@@ -46,6 +53,7 @@ namespace ViperGL
 
 		double mLastTime; // for deltatime calculation
 
+		static void keyCallback(GLFWwindow* window, int key, int action, int mods);
 		static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 		static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 	};

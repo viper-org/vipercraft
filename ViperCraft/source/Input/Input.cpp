@@ -21,9 +21,19 @@ namespace ViperCraft
 			return ViperGL::Input::GetKeyState(*gameWindow, key) == ViperGL::Input::KeyState::Pressed;
 		}
 
+		void OnKeyDown(std::function<void(Key)> func)
+		{
+			ViperGL::Input::OnKeyDown(*gameWindow, func);
+		}
+
 		void OnMouseButtonDown(MouseButton button, std::function<void()> func)
 		{
 			ViperGL::Input::OnMouseButtonDown(*gameWindow, button, func);
+		}
+
+		void OnMouseButtonUp(MouseButton button, std::function<void()> func)
+		{
+			ViperGL::Input::OnMouseButtonUp(*gameWindow, button, func);
 		}
 
 		float GetInputAxis(InputAxis axis)

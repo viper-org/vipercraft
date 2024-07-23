@@ -66,5 +66,42 @@ namespace ViperGL
 			glBindVertexArray(vao);
 			glDrawElements(GL_LINES, sizeof(INDICES) / sizeof(INDICES[0]), GL_UNSIGNED_INT, 0);
 		}
+
+		void DrawQuad(glm::vec2 x1, glm::vec2 y1, glm::vec2 x2, glm::vec2 y2, Color color)
+		{
+			float vertices[] = {
+				x1.x, x1.y, color.x, color.y, color.z, color.w,
+				y1.x, y1.y, color.x, color.y, color.z, color.w,
+				x2.x, x2.y, color.x, color.y, color.z, color.w,
+				y2.x, y2.y, color.x, color.y, color.z, color.w,
+			};
+			constexpr unsigned int INDICES[] = {
+				0, 3, 1,
+				0, 2, 3,
+			};
+
+			unsigned int vao, vbo, ebo;
+			glGenVertexArrays(1, &vao);
+			glGenBuffers(1, &vbo);
+			glGenBuffers(1, &ebo);
+
+			glBindVertexArray(vao);
+
+			glBindBuffer(GL_ARRAY_BUFFER, vbo);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+			// vertices
+			glEnableVertexAttribArray(0);
+			glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(vertices[0]), (void*)0);
+			// color
+			glEnableVertexAttribArray(1);
+			glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 6 * sizeof(vertices[0]), (void*)(2 * sizeof(vertices[0])));
+
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(INDICES), INDICES, GL_STATIC_DRAW);
+
+			glBindVertexArray(vao);
+			glDrawElements(GL_TRIANGLES, sizeof(INDICES) / sizeof(INDICES[0]), GL_UNSIGNED_INT, 0);
+		}
 	}
 }

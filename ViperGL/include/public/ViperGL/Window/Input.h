@@ -39,9 +39,13 @@ namespace ViperGL
 			Right,
 		};
 
+		Key KeyFromGLFW(int k);
+
 		KeyState GetKeyState(Window& window, Key key);
 
+		void OnKeyDown(Window& window, std::function<void(Key)> func);
 		void OnMouseButtonDown(Window& window, MouseButton button, std::function<void()> func);
+		void OnMouseButtonUp(Window& window, MouseButton button, std::function<void()> func);
 
 		float GetMouseAxis(Window& window, MouseAxis axis);
 		void SetCursorLocked(Window& window, bool locked);
