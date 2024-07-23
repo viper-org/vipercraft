@@ -65,6 +65,10 @@ namespace ViperGL
 
 			glBindVertexArray(vao);
 			glDrawElements(GL_LINES, sizeof(INDICES) / sizeof(INDICES[0]), GL_UNSIGNED_INT, 0);
+
+			glDeleteVertexArrays(1, &vao);
+			glDeleteBuffers(1, &vbo);
+			glDeleteBuffers(1, &ebo);
 		}
 
 		void DrawQuad(glm::vec2 x1, glm::vec2 y1, glm::vec2 x2, glm::vec2 y2, Color color)
@@ -102,6 +106,10 @@ namespace ViperGL
 
 			glBindVertexArray(vao);
 			glDrawElements(GL_TRIANGLES, sizeof(INDICES) / sizeof(INDICES[0]), GL_UNSIGNED_INT, 0);
+
+			glDeleteVertexArrays(1, &vao);
+			glDeleteBuffers(1, &vbo);
+			glDeleteBuffers(1, &ebo);
 		}
 	}
 }
