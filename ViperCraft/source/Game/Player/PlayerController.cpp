@@ -108,6 +108,11 @@ namespace ViperCraft
 
 	void PlayerController::processInput()
 	{
+		if (!ViperCraft::GetInstance()->isGameInFocus())
+		{
+			return;
+		}
+
 		if (isSprinting())
 		{
 			mParent.mMoveSpeed *= 1.3f;
@@ -142,7 +147,7 @@ namespace ViperCraft
 
 		if ((isPlayerGroundedAt(mParent.mPosition) || isPlayerInWater()) && Input::GetButtonDown(Input::Key::Space))
 		{
-			constexpr float JUMP_FORCE = 150;
+			constexpr float JUMP_FORCE = 350;
 			mAcceleration.y += JUMP_FORCE * mParent.mJumpHeight;
 		}
 
@@ -186,6 +191,10 @@ namespace ViperCraft
 
 	void PlayerController::onLeftMouseClick()
 	{
+		if (!ViperCraft::GetInstance()->isGameInFocus()) {
+			return;
+		}
+
 		Physics::RaycastHit hit;
 		if (Physics::RaycastSolid(mParent.mPosition + glm::vec3(0.f, 1.6f, 0.f), mCamera.front, 3.f, hit))
 		{
@@ -203,6 +212,10 @@ namespace ViperCraft
 
 	void PlayerController::onRightMouseClick()
 	{
+		if (!ViperCraft::GetInstance()->isGameInFocus()) {
+			return;
+		}
+
 		Physics::RaycastHit hit;
 		if (Physics::RaycastSolid(mParent.mPosition + glm::vec3(0.f, 1.6f, 0.f), mCamera.front, 3.f, hit))
 		{

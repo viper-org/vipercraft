@@ -2,6 +2,8 @@
 
 #include <Game/Block/Tile.h>
 
+#include <Game/Gui/GuiPause.h>
+
 #include <Input/Input.h>
 
 #include <ViperGL/Render/UI.h>
@@ -12,6 +14,7 @@ namespace ViperCraft
 {
 	ViperCraft::ViperCraft(ViperCraftErrorCode& errorCode)
 		: mRenderQueue(mPlayer.getPlayerController().getCamera())
+		, mGameHasFocus(false)
 	{
 		if (!glfwInit()) // maybe move this to something like ViperGL::StaticInit
 		{
@@ -37,7 +40,9 @@ namespace ViperCraft
 		ViperGL::UI::InitUIRenderer(mWindow.getAspectRatio());
 
 		Input::InitInputManager(&mWindow);
-		Input::SetCursorLocked(true);
+
+		Input::OnKeyDown(std::bind(&ViperCraft::processKeyDownForGui, this, std::placeholders::_1));
+		Input::OnMouseButton(std::bind(&ViperCraft::processMouseButtonForGui, this, std::placeholders::_1, std::placeholders::_2));
 
 		errorCode = ViperCraftErrorCode::Success;
 	}
@@ -60,6 +65,15 @@ namespace ViperCraft
 
 			mWindow.clear();
 			render();
+
+			if (mCurrentScreen != nullptr)
+			{
+				mCurrentScreen->updateScreen();
+			}
+			else
+			{
+				setGameInFocus();
+			}
 
 			postEvents(deltaTime);
 
@@ -85,6 +99,26 @@ namespace ViperCraft
 		mOnTickHandlers.push_back(std::move(handler));
 	}
 
+	void ViperCraft::displayGuiScreen(std::unique_ptr<GuiScreen> newGuiScreen) 
+	{
+		if (mCurrentScreen != nullptr) 
+		{
+			mCurrentScreen->onGuiClosed();
+		}
+
+		mCurrentScreen = std::move(newGuiScreen);
+
+		if (mCurrentScreen != nullptr) 
+		{
+			setGameNotInFocus();
+			mCurrentScreen->setResolution(1920, 1080); //TODO: some other display size stuff
+		}
+		else 			
+		{
+			setGameInFocus();
+		}
+	}
+
 	World* ViperCraft::getWorld()
 	{
 		return &mWorld;
@@ -100,6 +134,29 @@ namespace ViperCraft
 		return &mRenderQueue;
 	}
 
+	bool ViperCraft::isGameInFocus() 
+	{
+		return mGameHasFocus;
+	}
+
+	void ViperCraft::setGameInFocus() 
+	{
+		if (!mGameHasFocus) 
+		{
+			mGameHasFocus = true;
+			Input::SetCursorLocked(true);
+			displayGuiScreen(nullptr);
+		}
+	}
+
+	void ViperCraft::setGameNotInFocus() 
+	{
+		if (mGameHasFocus)
+		{
+			mGameHasFocus = false;
+			Input::SetCursorLocked(false);
+		}
+	}
 
 	void ViperCraft::render()
 	{
@@ -107,9 +164,17 @@ namespace ViperCraft
 
 		// TODO: Move this
 		ViperGL::UI::PreDraw();
-		ViperGL::UI::DrawLine(glm::vec2(-0.03f, 0.f), glm::vec2(0.03f, 0.f), ViperGL::Colors::White);
-		ViperGL::UI::DrawLine(glm::vec2(0.f, -0.03f), glm::vec2(0.f, 0.03f), ViperGL::Colors::White);
-		ViperGL::UI::DrawQuad({ -0.5f, -.5f }, { -.5f, -.4f }, { -.4f, -.5f }, { -.4f, -.4f }, ViperGL::Colors::Black);
+
+		if (mCurrentScreen != nullptr)
+		{
+			mCurrentScreen->drawScreen(1337, 42069); //TODO: GET MOUSE X AND MOUSE Y VERY IMPORTANT
+		}
+		else
+		{
+			ViperGL::UI::DrawLine(glm::vec2(-0.03f, 0.f), glm::vec2(0.03f, 0.f), ViperGL::Colors::White);
+			ViperGL::UI::DrawLine(glm::vec2(0.f, -0.03f), glm::vec2(0.f, 0.03f), ViperGL::Colors::White);
+			//ViperGL::UI::DrawQuad({ -0.5f, -.5f }, { -.5f, -.4f }, { -.4f, -.5f }, { -.4f, -.4f }, ViperGL::Colors::Black);
+		}
 	}
 
 	void ViperCraft::postEvents(double deltaTime)
@@ -128,5 +193,23 @@ namespace ViperCraft
 		srand(time(NULL)); // randomly generate a seed for now
 		World::Generate(mWorld, (unsigned long long)rand() * rand());
 		mPlayer.init();
+	}
+
+	void ViperCraft::processKeyDownForGui(Input::Key key)
+	{
+		if (mCurrentScreen == nullptr) 
+		{
+			if (key == Input::Key::Escape) displayGuiScreen(std::make_unique<GuiPause>());
+			return;
+		}
+
+		mCurrentScreen->handleKeyboardInput(key);
+	}
+
+	void ViperCraft::processMouseButtonForGui(Input::MouseButton button, bool state)
+	{
+		if (mCurrentScreen == nullptr) return;
+
+		mCurrentScreen->handleMouseInput(1337, 69420, button, state); //TODO: GET MOUSE X AND MOUSE Y VERY IMPORTANT
 	}
 }

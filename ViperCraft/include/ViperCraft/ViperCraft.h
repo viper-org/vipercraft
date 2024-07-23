@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Game/Gui/GuiScreen.h>
+
 #include <Game/Player/Player.h>
 
 #include <Game/World/World.h>
@@ -32,9 +34,16 @@ namespace ViperCraft
 
 		void onTick(std::function<void(double)> handler);
 
+		void displayGuiScreen(std::unique_ptr<GuiScreen> newGuiScreen);
+
 		World* getWorld();
 		Player* getPlayer();
 		ViperGL::RenderQueue* getRenderQueue();
+		
+		bool isGameInFocus();
+
+		void setGameInFocus();
+		void setGameNotInFocus();
 
 	private:
 		ViperGL::Window mWindow;
@@ -42,12 +51,19 @@ namespace ViperCraft
 
 		std::vector<std::function<void(double)> > mOnTickHandlers;
 
+		std::unique_ptr<GuiScreen> mCurrentScreen;
+
 		World mWorld;
 		Player mPlayer;
+
+		bool mGameHasFocus;
 
 		void initGame();
 
 		void render();
 		void postEvents(double deltaTime);
+
+		void processKeyDownForGui(Input::Key key);
+		void processMouseButtonForGui(Input::MouseButton button, bool state);
 	};
 }

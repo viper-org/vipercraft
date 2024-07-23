@@ -26,6 +26,11 @@ namespace ViperCraft
 			ViperGL::Input::OnKeyDown(*gameWindow, func);
 		}
 
+		void OnMouseButton(std::function<void(MouseButton, bool)> func) 
+		{
+			ViperGL::Input::OnMouseButton(*gameWindow, func);
+		}
+		
 		void OnMouseButtonDown(MouseButton button, std::function<void()> func)
 		{
 			ViperGL::Input::OnMouseButtonDown(*gameWindow, button, func);
