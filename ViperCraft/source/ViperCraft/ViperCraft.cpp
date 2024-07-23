@@ -124,8 +124,8 @@ namespace ViperCraft
 
 		mUIRenderQueue.reset();
 		// draw crosshair
-		mUIRenderQueue.line(glm::vec2(-0.03f, 0.f), glm::vec2(0.03f, 0.f));
-		mUIRenderQueue.line(glm::vec2(0.f, -0.03f), glm::vec2(0.f, 0.03f));
+		mUIRenderQueue.line(glm::vec2(-0.03f, 0.f), glm::vec2(0.03f, 0.f), ViperGL::Colors::White);
+		mUIRenderQueue.line(glm::vec2(0.f, -0.03f), glm::vec2(0.f, 0.03f), ViperGL::Colors::White);
 
 		mUIRenderQueue.bind();
 	}

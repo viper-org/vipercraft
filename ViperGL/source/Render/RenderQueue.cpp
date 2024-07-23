@@ -156,12 +156,6 @@ namespace ViperGL
 		mCamera.updateVectors();
 
 		mCam->updateMatrices();
-
-		/*for (auto& buffer : mBuffers)
-		{
-			glBindVertexArray(buffer.mVAO);
-			glDrawElements(GL_TRIANGLES, buffer.mIndices.size(), GL_UNSIGNED_INT, 0);
-		}*/
 	}
 
 	void RenderQueue::draw(int bufferId)
@@ -211,11 +205,11 @@ namespace ViperGL
 		mIndices.clear();
 	}
 
-	void UIRenderQueue::line(glm::vec2 from, glm::vec2 to)
+	void UIRenderQueue::line(glm::vec2 from, glm::vec2 to, Color color)
 	{
 		float vertices[] = {
-			from.x, from.y,
-			to.x, to.y
+			from.x, from.y, color.x, color.y, color.z, color.w,
+			to.x, to.y, color.x, color.y, color.z, color.w,
 		};
 
 		constexpr unsigned int INDICES[] = {
@@ -225,7 +219,7 @@ namespace ViperGL
 		unsigned int correctedIndices[2];
 		for (auto i = 0; i < 2; ++i)
 		{
-			correctedIndices[i] = INDICES[i] + mVertices.size() / 2;
+			correctedIndices[i] = INDICES[i] + mVertices.size() / 6;
 		}
 
 		std::copy(std::begin(vertices), std::end(vertices), std::back_inserter(mVertices));
@@ -245,7 +239,10 @@ namespace ViperGL
 
 		// vertices
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(mVertices[0]), (void*)0);
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(mVertices[0]), (void*)0);
+		// color
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 6 * sizeof(mVertices[0]), (void*)(2 * sizeof(float)));
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mEBO);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, mIndices.size() * sizeof(mIndices[0]), mIndices.data(), GL_STATIC_DRAW);

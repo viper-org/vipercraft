@@ -13,6 +13,14 @@ namespace ViperGL
 	class TextureAtlas;
 	class Cam;
 
+	using Color = glm::vec4;
+
+	namespace Colors
+	{
+		constexpr glm::vec4 White = glm::vec4(1.f, 1.f, 1.f, 1.f);
+		constexpr glm::vec4 Black = glm::vec4(0.f, 0.f, 0.f, 1.f);
+	}
+
 	struct TextureCoords
 	{
 		float x;
@@ -80,7 +88,7 @@ namespace ViperGL
 		void init(float aspectRatio);
 
 		void reset();
-		void line(glm::vec2 from, glm::vec2 to);
+		void line(glm::vec2 from, glm::vec2 to, Color);
 		void bind();
 
 		void draw();
