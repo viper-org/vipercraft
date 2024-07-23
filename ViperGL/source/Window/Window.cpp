@@ -1,5 +1,7 @@
 #include <ViperGL/Window/Window.h>
 
+#include <ViperGL/Window/Input.h>
+
 #include <glad/glad.h>
 
 #include <stb_image.h>
@@ -71,6 +73,12 @@ namespace ViperGL
 		glFlush();
 	}
 
+	std::vector<std::function<void(Input::Key)> > keyHandlers;
+	void Window::onKeyDown(std::function<void(Input::Key)> func)
+	{
+		keyHandlers.push_back(func);
+	}
+
 	std::unordered_map<int, std::vector<std::function<void()> > > mouseHandlers;
 	void Window::onMouseButtonDown(int button, std::function<void()> func)
 	{
@@ -109,6 +117,17 @@ namespace ViperGL
 	GLFWwindow* Window::getWindowCtx() const
 	{
 		return mWindowCtx;
+	}
+
+	void Window::keyCallback(GLFWwindow* window, int key, int action, int mods)
+	{
+		if (action == GLFW_PRESS)
+		{
+			for (auto& func : keyHandlers)
+			{
+				func(Input::KeyFromGLFW(key));
+			}
+		}
 	}
 
 	void Window::mouseButtonCallback(GLFWwindow*, int button, int action, int)

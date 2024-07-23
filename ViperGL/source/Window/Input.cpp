@@ -197,11 +197,176 @@ namespace ViperGL
 			}
 		}
 
+		Key KeyFromGLFW(int k)
+		{
+			using enum Key;
+			switch (k)
+			{
+				case GLFW_KEY_ESCAPE:
+					return Escape;
+				case GLFW_KEY_F1:
+					return F1;
+				case GLFW_KEY_F2:
+						return F2;
+				case GLFW_KEY_F3:
+					return F3;
+				case GLFW_KEY_F4:
+					return F4;
+				case GLFW_KEY_F5:
+					return F5;
+				case GLFW_KEY_F6:
+					return F6;
+				case GLFW_KEY_F7:
+					return F7;
+				case GLFW_KEY_F8:
+					return F8;
+				case GLFW_KEY_F9:
+					return F9;
+				case GLFW_KEY_F10:
+					return F10;
+				case GLFW_KEY_F11:
+					return F11;
+				case GLFW_KEY_F12:
+					return F12;
+				case GLFW_KEY_GRAVE_ACCENT:
+					return Grave;
+				case GLFW_KEY_1:
+					return One;
+				case GLFW_KEY_2:
+					return Two;
+				case GLFW_KEY_3:
+					return Three;
+				case GLFW_KEY_4:
+					return Four;
+				case GLFW_KEY_5:
+					return Five;
+				case GLFW_KEY_6:
+					return Six;
+				case GLFW_KEY_7:
+					return Seven;
+				case GLFW_KEY_8:
+					return Eight;
+				case GLFW_KEY_9:
+					return Nine;
+				case GLFW_KEY_0:
+					return Zero;
+				case GLFW_KEY_MINUS:
+					return Minus;
+				case GLFW_KEY_EQUAL:
+					return Equals;
+				case GLFW_KEY_BACKSPACE:
+					return Backspace;
+				case GLFW_KEY_TAB:
+					return Tab;
+				case GLFW_KEY_Q:
+					return Q;
+				case GLFW_KEY_W:
+					return W;
+				case GLFW_KEY_E:
+					return E;
+				case GLFW_KEY_R:
+					return R;
+				case GLFW_KEY_T:
+					return T;
+				case GLFW_KEY_Y:
+					return Y;
+				case GLFW_KEY_U:
+					return U;
+				case GLFW_KEY_I:
+					return I;
+				case GLFW_KEY_O:
+					return O;
+				case GLFW_KEY_P:
+					return P;
+				case GLFW_KEY_LEFT_BRACKET:
+					return LBracket;
+				case GLFW_KEY_RIGHT_BRACKET:
+					return RBracket;
+				case GLFW_KEY_ENTER:
+					return Enter;
+				case GLFW_KEY_CAPS_LOCK:
+					return CapsLock;
+				case GLFW_KEY_A:
+					return A;
+				case GLFW_KEY_S:
+					return S;
+				case GLFW_KEY_D:
+					return D;
+				case GLFW_KEY_F:
+					return F;
+				case GLFW_KEY_G:
+					return G;
+				case GLFW_KEY_H:
+					return H;
+				case GLFW_KEY_J:
+					return J;
+				case GLFW_KEY_K:
+					return K;
+				case GLFW_KEY_L:
+					return L;
+				case GLFW_KEY_SEMICOLON:
+					return Semicolon;
+				case GLFW_KEY_APOSTROPHE:
+					return Apostrophe;
+				case GLFW_KEY_LEFT_SHIFT:
+					return LShift;
+				case GLFW_KEY_BACKSLASH:
+					return Backslash;
+				case GLFW_KEY_Z:
+					return Z;
+				case GLFW_KEY_X:
+					return X;
+				case GLFW_KEY_C:
+					return C;
+				case GLFW_KEY_V:
+					return V;
+				case GLFW_KEY_B:
+					return B;
+				case GLFW_KEY_N:
+					return N;
+				case GLFW_KEY_M:
+					return M;
+				case GLFW_KEY_COMMA:
+					return Comma;
+				case GLFW_KEY_PERIOD:
+					return Dot;
+				case GLFW_KEY_SLASH:
+					return Slash;
+				case GLFW_KEY_RIGHT_SHIFT:
+					return RShift;
+				case GLFW_KEY_LEFT_CONTROL:
+					return LCtrl;
+				case GLFW_KEY_LEFT_ALT:
+					return LAlt;
+				case GLFW_KEY_SPACE:
+					return Space;
+				case GLFW_KEY_RIGHT_ALT:
+					return RAlt;
+				case GLFW_KEY_MENU:
+					return Menu;
+				case GLFW_KEY_RIGHT_CONTROL:
+					return RCtrl;
+				case GLFW_KEY_LEFT:
+					return ArrowLeft;
+				case GLFW_KEY_UP:
+					return ArrowUp;
+				case GLFW_KEY_RIGHT:
+					return ArrowRight;
+				case GLFW_KEY_DOWN:
+					return ArrowDown;
+			}
+		}
+
 		KeyState GetKeyState(Window& window, Key key)
 		{
 			GLFWwindow* windowCtx = window.getWindowCtx();
 			int state = glfwGetKey(windowCtx, GLFWKey(key));
 			return FromGLFWState(state);
+		}
+
+		void OnKeyDown(Window& window, std::function<void(Key)> func)
+		{
+			window.onKeyDown(func);
 		}
 
 		void OnMouseButtonDown(Window& window, MouseButton button, std::function<void()> func)

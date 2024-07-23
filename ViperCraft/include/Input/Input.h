@@ -16,7 +16,8 @@ namespace ViperCraft
 		void InitInputManager(ViperGL::Window* window);
 
 		bool GetButtonDown(Key key);
-
+		
+		void OnKeyDown(std::function<void(Key)> func);
 		void OnMouseButtonDown(MouseButton button, std::function<void()> func);
 
 		float GetInputAxis(InputAxis axis);
