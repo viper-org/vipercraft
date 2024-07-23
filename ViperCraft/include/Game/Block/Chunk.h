@@ -17,12 +17,14 @@ namespace ViperCraft
 		Chunk(glm::vec3 position);
 
 		void beginRendering();
-		void draw();
+		void drawOpaque();
+		void drawTransparent();
 
 		void chunkUpdated();
 
 		glm::vec3 getPosition();
 		Tile*& getTile(glm::vec3 position);
+		Tile*& getTileOffset(glm::vec3 offset);
 
 	private:
 		Tile* mTiles[16][256][16]; // x, y, z

@@ -146,6 +146,22 @@ namespace ViperCraft
 			mAcceleration.y += JUMP_FORCE * mParent.mJumpHeight;
 		}
 
+		if (Input::GetButtonDown(Input::Key::R))
+		{
+			mParent.mPosition = ViperCraft::GetInstance()->getWorld()->getSpawnPoint();
+			mAcceleration = glm::vec3(0.f);
+			mVelocity = glm::vec3(0.f);
+		}
+		if (Input::GetButtonDown(Input::Key::RCtrl))
+		{
+			ViperCraft::GetInstance()->getWorld()->saveToFile("test.vcwrld");
+		}
+		if (Input::GetButtonDown(Input::Key::RShift))
+		{
+			ViperCraft::GetInstance()->getWorld()->clear();
+			World::LoadFromFile(*ViperCraft::GetInstance()->getWorld(), "test.vcwrld");
+		}
+
 		mVelocity += move;
 
 		mCamera.yaw += Input::GetInputAxis(Input::InputAxis::AxisX);

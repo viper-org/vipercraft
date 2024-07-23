@@ -15,6 +15,11 @@ namespace ViperCraft
 
 		Tile* getTile(glm::vec3 position);
 		Chunk* getPositionChunk(glm::vec3 position);
+		glm::vec3 getSpawnPoint();
+
+		void clear();
+		void saveToFile(std::string_view path);
+		static void LoadFromFile(World& world, std::string_view path);
 
 		void render();
 
@@ -23,6 +28,8 @@ namespace ViperCraft
 	private:
 		std::vector<std::vector<Chunk> > mLoadedChunks; // x, z - only chunks that are to be rendered, other chunks are loaded when needed
 		Sky mSky;
+		glm::vec3 mSpawnPoint;
+		unsigned long long mCreatedAt;
 
 		static void GenerateCaves(World& world, unsigned long long seed);
 		static void GenerateWater(Chunk& chunk, float height, glm::vec2 position);

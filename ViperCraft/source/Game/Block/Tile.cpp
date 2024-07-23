@@ -6,8 +6,9 @@
 
 namespace ViperCraft
 {
+	constinit int blockid = 0;
 	std::unordered_map<std::string_view, Tile> tiles = {
-		{ "air", Tile({-1,-1}, "air")},
+		{ "air", Tile({-1,-1}, "air", blockid++)},
 
 		{ "cobblestone", Tile({
 			ViperGL::TextureCoords{0,0},
@@ -16,7 +17,7 @@ namespace ViperCraft
 			ViperGL::TextureCoords{0,0},
 			ViperGL::TextureCoords{0,0},
 			ViperGL::TextureCoords{0,0},
-		}, "cobblestone")},
+		}, "cobblestone", blockid++)},
 
 		{ "dirt", Tile({
 			ViperGL::TextureCoords{1,0},
@@ -25,7 +26,7 @@ namespace ViperCraft
 			ViperGL::TextureCoords{1,0},
 			ViperGL::TextureCoords{1,0},
 			ViperGL::TextureCoords{1,0},
-		}, "dirt")},
+		}, "dirt", blockid++)},
 
 		{ "grass_block", Tile({
 			ViperGL::TextureCoords{1,0},
@@ -34,7 +35,7 @@ namespace ViperCraft
 			ViperGL::TextureCoords{2,0},
 			ViperGL::TextureCoords{2,0},
 			ViperGL::TextureCoords{2,0},
-		}, "grass_block")},
+		}, "grass_block", blockid++)},
 
 		{ "stone", Tile({
 			ViperGL::TextureCoords{0,1},
@@ -43,7 +44,7 @@ namespace ViperCraft
 			ViperGL::TextureCoords{0,1},
 			ViperGL::TextureCoords{0,1},
 			ViperGL::TextureCoords{0,1},
-		}, "stone")},
+		}, "stone", blockid++)},
 
 		{ "water", Tile({
 			ViperGL::TextureCoords{1,1},
@@ -52,7 +53,7 @@ namespace ViperCraft
 			ViperGL::TextureCoords{1,1},
 			ViperGL::TextureCoords{1,1},
 			ViperGL::TextureCoords{1,1},
-		}, "water")},
+		}, "water", blockid++)},
 
 		{ "sand", Tile({
 			ViperGL::TextureCoords{2,1},
@@ -61,7 +62,7 @@ namespace ViperCraft
 			ViperGL::TextureCoords{2,1},
 			ViperGL::TextureCoords{2,1},
 			ViperGL::TextureCoords{2,1},
-		}, "sand")},
+		}, "sand", blockid++)},
 
 		{ "wood", Tile({
 			ViperGL::TextureCoords{0,2},
@@ -70,7 +71,7 @@ namespace ViperCraft
 			ViperGL::TextureCoords{1,2},
 			ViperGL::TextureCoords{1,2},
 			ViperGL::TextureCoords{1,2},
-		}, "wood")},
+		}, "wood", blockid++)},
 
 		{ "leaves", Tile({
 			ViperGL::TextureCoords{2,2},
@@ -79,7 +80,7 @@ namespace ViperCraft
 			ViperGL::TextureCoords{2,2},
 			ViperGL::TextureCoords{2,2},
 			ViperGL::TextureCoords{2,2},
-		}, "leaves")},
+		}, "leaves", blockid++)},
 
 		{ "gravel", Tile({
 			ViperGL::TextureCoords{3,1},
@@ -88,7 +89,7 @@ namespace ViperCraft
 			ViperGL::TextureCoords{3,1},
 			ViperGL::TextureCoords{3,1},
 			ViperGL::TextureCoords{3,1},
-		}, "gravel")},
+		}, "gravel", blockid++)},
 
 		{ "coal_ore", Tile({
 			ViperGL::TextureCoords{0,3},
@@ -97,17 +98,19 @@ namespace ViperCraft
 			ViperGL::TextureCoords{0,3},
 			ViperGL::TextureCoords{0,3},
 			ViperGL::TextureCoords{0,3},
-		}, "coal_ore")},
+		}, "coal_ore", blockid++)},
 	};
 
 	Tile::Tile()
 		: mFaceTextures()
+		, mId(0)
 	{
 	}
 
-	Tile::Tile(std::array<ViperGL::TextureCoords, 6> faceTextures, std::string name)
+	Tile::Tile(std::array<ViperGL::TextureCoords, 6> faceTextures, std::string name, int id)
 		: mFaceTextures(faceTextures)
 		, mName(std::move(name))
+		, mId(id)
 	{
 	}
 
@@ -168,6 +171,11 @@ namespace ViperCraft
 		return mName;
 	}
 
+	int Tile::getId() const
+	{
+		return mId;
+	}
+
 	bool Tile::isSolidTile() const
 	{
 		return mName != "air" && mName != "water";
@@ -181,5 +189,14 @@ namespace ViperCraft
 	Tile* Tile::GetTile(std::string_view name)
 	{
 		return &tiles[name];
+	}
+
+	Tile* Tile::GetTile(int id)
+	{
+		auto it = std::find_if(tiles.begin(), tiles.end(), [id](const auto& tile) {
+			return tile.second.getId() == id;
+			});
+		if (it == tiles.end()) return nullptr;
+		return &it->second;
 	}
 }

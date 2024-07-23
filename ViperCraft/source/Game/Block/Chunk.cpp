@@ -26,9 +26,12 @@ namespace ViperCraft
 		mTransparentRenderBuffer = ViperCraft::GetInstance()->getRenderQueue()->newBuffer();
 	}
 
-	void Chunk::draw()
+	void Chunk::drawOpaque()
 	{
 		ViperCraft::GetInstance()->getRenderQueue()->draw(mRenderBuffer);
+	}
+	void Chunk::drawTransparent()
+	{
 		ViperCraft::GetInstance()->getRenderQueue()->draw(mTransparentRenderBuffer);
 	}
 
@@ -42,6 +45,11 @@ namespace ViperCraft
 		glm::vec3 offset = position - mPosition;
 
 		return mTiles[(int)std::abs(offset.x)][(int)std::abs(offset.y)][(int)std::abs(offset.z)];
+	}
+
+	Tile*& Chunk::getTileOffset(glm::vec3 position)
+	{
+		return mTiles[(int)position.x][(int)position.y][(int)position.z];
 	}
 
 	void Chunk::chunkUpdated()

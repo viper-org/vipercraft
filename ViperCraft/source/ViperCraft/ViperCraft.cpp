@@ -107,6 +107,8 @@ namespace ViperCraft
 
 	void ViperCraft::postEvents(double deltaTime)
 	{
+		// in case of very long frames, limit the deltatime
+		if (deltaTime >= 0.04) deltaTime = 0.04;
 		for (auto& handler : mOnTickHandlers)
 		{
 			handler(deltaTime);

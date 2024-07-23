@@ -5,6 +5,8 @@
 #include <stb_perlin/stb_perlin.h>
 
 #include <algorithm>
+#include <chrono>
+#include <fstream>
 #include <iostream>
 
 namespace ViperCraft
@@ -34,44 +36,157 @@ namespace ViperCraft
 		return &mLoadedChunks[(int)abs(offset.x)][(int)abs(offset.z)];
 	}
 
+	glm::vec3 World::getSpawnPoint()
+	{
+		return mSpawnPoint;
+	}
+
+	void World::clear()
+	{
+		mLoadedChunks.clear();
+
+		mSpawnPoint = glm::vec3(0, 0, 0);
+		mCreatedAt = 0;
+	}
+
+	template <class T>
+	static inline void Write(std::ofstream& stream, T v)
+	{
+		stream.write((const char*)&v, sizeof(v));
+	}
+
+	template <class T>
+	static inline void Read(std::ifstream& stream, T& v)
+	{
+		stream.read((char*)&v, sizeof(v));
+	}
+
+	void World::saveToFile(std::string_view path)
+	{
+		std::ofstream file = std::ofstream(std::string(path), std::ofstream::binary);
+
+		if (!file.is_open()) return; // TODO: error
+
+		constexpr std::uint32_t MAGIC_NUMBER = 0xCAFEBABE;
+
+		Write(file, MAGIC_NUMBER);
+		Write(file, mCreatedAt);
+		Write(file, mSpawnPoint.x);
+		Write(file, mSpawnPoint.y);
+		Write(file, mSpawnPoint.z);
+		Write(file, (std::uint16_t)8); // width
+		Write(file, (std::uint16_t)256); // height
+		Write(file, (std::uint16_t)8); // depth
+		unsigned long long written = 0;
+		for (auto& chunks : mLoadedChunks)
+		{
+			for (auto& chunk : chunks)
+			{
+				for (auto& yz : chunk.mTiles)
+				{
+					for (auto& z : yz)
+					{
+						for (auto& tile : z)
+						{
+							if (!tile) Write(file, (std::uint8_t)0);
+							else Write(file, (std::uint8_t)tile->getId());
+							++written;
+						}
+					}
+				}
+			}
+		}
+		std::cout << written << "\n";
+	}
+
+	void World::LoadFromFile(World& world, std::string_view path)
+	{
+		std::ifstream file = std::ifstream(std::string(path), std::ifstream::binary);
+
+		if (!file.is_open()) return; // TODO: error
+
+		constexpr std::uint32_t MAGIC_NUMBER = 0xCAFEBABE;
+
+		std::uint32_t magic;
+		unsigned long long createdAt;
+		glm::vec3 spawnPoint;
+		std::uint16_t width;
+		std::uint16_t height;
+		std::uint16_t depth;
+
+		Read(file, magic);
+		if (magic != MAGIC_NUMBER) return; // TODO: error
+		Read(file, createdAt);
+		Read(file, spawnPoint.x);
+		Read(file, spawnPoint.y);
+		Read(file, spawnPoint.z);
+		Read(file, width);
+		Read(file, height);
+		Read(file, depth);
+
+		glm::vec3 chunkPosition = glm::vec3(0.f, 0.f, 0.f);
+		for (auto i = 0; i < depth; ++i)
+		{
+			world.mLoadedChunks.push_back(std::vector<Chunk>(width));
+			for (auto& chunk : world.mLoadedChunks.back())
+			{
+				chunk.beginRendering();
+				chunk.mPosition = chunkPosition;
+				chunkPosition.z += 16;
+
+				for (int x = 0; x < 16; ++x)
+				{
+					for (int y = 0; y < height; ++y)
+					{
+						for (int z = 0; z < 16; ++z)
+						{
+							std::uint8_t id;
+							Read(file, id);
+							chunk.getTileOffset(glm::vec3(x, y, z)) = Tile::GetTile(id);
+						}
+					}
+				}
+			}
+			chunkPosition.x += 16;
+			chunkPosition.z = 0;
+		}
+
+		world.mSpawnPoint = spawnPoint;
+		world.mCreatedAt = createdAt;
+		ViperCraft::GetInstance()->setPlayerSpawn(spawnPoint);
+		for (auto& chunks : world.mLoadedChunks)
+		{
+			for (auto& chunk : chunks)
+			{
+				chunk.chunkUpdated();
+			}
+		}
+	}
+
 	void World::render()
 	{
 		ViperCraft::GetInstance()->getRenderQueue()->prepareDraw();
 
-		// we can probably do all of this only when the player moves but for now its fine
-		auto playerPos = ViperCraft::GetInstance()->getPlayer()->getPosition();
-		std::vector<std::vector<Chunk*> > sortedChunks;
 		for (auto& chunks : mLoadedChunks)
 		{
-			sortedChunks.push_back(std::vector<Chunk*>());
 			for (auto& chunk : chunks)
 			{
-				sortedChunks.back().push_back(&chunk);
+				chunk.drawOpaque();
 			}
 		}
-
-		std::sort(sortedChunks.begin(), sortedChunks.end(), [this, &playerPos](const std::vector<Chunk*>& a, const std::vector<Chunk*>& b) {
-			return (glm::length(a.front()->getPosition().x - playerPos.x)) > (glm::length(b.front()->getPosition().x - playerPos.x));
-		});
-		for (auto& chunks : sortedChunks)
-		{
-			std::sort(chunks.begin(), chunks.end(), [this, &playerPos](Chunk* a, Chunk* b) {
-				return (glm::length(a->getPosition().z - playerPos.z)) > (glm::length(b->getPosition().z - playerPos.z));
-			});
-		}
-
-		for (auto& chunks : sortedChunks)
+		for (auto& chunks : mLoadedChunks)
 		{
 			for (auto& chunk : chunks)
 			{
-				chunk->draw();
+				chunk.drawTransparent();
 			}
 		}
+
 		mSky.draw();
 	}
 
 
-	constexpr int WORLD_SIZE = 2;
+	constexpr int WORLD_SIZE = 8;
 	void World::Generate(World& world, unsigned long long seed)
 	{
 		constexpr float WORLDGEN_INTENSITY = 5.f;
@@ -150,6 +265,9 @@ namespace ViperCraft
 
 		GenerateCaves(world, seed);
 
+		world.mSpawnPoint = playerSpawn;
+		auto createdTime = std::chrono::system_clock::now();
+		world.mCreatedAt = std::chrono::duration_cast<std::chrono::milliseconds>(createdTime.time_since_epoch()).count();
 		ViperCraft::GetInstance()->setPlayerSpawn(playerSpawn);
 		for (auto& chunks : world.mLoadedChunks)
 		{
