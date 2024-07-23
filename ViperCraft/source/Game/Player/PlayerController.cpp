@@ -191,6 +191,12 @@ namespace ViperCraft
 		{
 			auto chunk = ViperCraft::GetInstance()->getWorld()->getPositionChunk(hit.point);
 			chunk->getTile(hit.point) = nullptr; // air
+			auto surroundings = Tile::GetSurroundings(hit.point);
+			for (auto& position : surroundings)
+			{
+				auto tile = ViperCraft::GetInstance()->getWorld()->getTile(position);
+				if (tile) tile->update(position);
+			}
 			chunk->chunkUpdated();
 		}
 	}

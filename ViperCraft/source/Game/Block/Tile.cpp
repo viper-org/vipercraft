@@ -166,6 +166,24 @@ namespace ViperCraft
 		}
 	}
 
+	void Tile::update(glm::vec3 position)
+	{
+		if (mName == "water")
+		{
+			auto surroundings = Tile::GetFlowableSurroundings(position);
+			for (auto& pos : surroundings)
+			{
+				auto chunk = ViperCraft::GetInstance()->getWorld()->getPositionChunk(pos);
+				auto& tile = chunk->getTile(pos);
+				if (!tile)
+				{
+					tile = Tile::GetTile("water");
+					tile->update(pos);
+				}
+			}
+		}
+	}
+
 	std::string_view Tile::getName() const
 	{
 		return mName;
@@ -198,5 +216,38 @@ namespace ViperCraft
 			});
 		if (it == tiles.end()) return nullptr;
 		return &it->second;
+	}
+
+	std::array<glm::vec3, 6> Tile::GetSurroundings(glm::vec3 position)
+	{
+		return std::array<glm::vec3, 6>{
+			position + glm::vec3(1, 0, 0),
+			position - glm::vec3(1, 0, 0),
+			position + glm::vec3(0, 1, 0),
+			position - glm::vec3(0, 1, 0),
+			position + glm::vec3(0, 0, 1),
+			position - glm::vec3(0, 0, 1),
+		};
+	}
+
+	std::array<glm::vec3, 5> Tile::GetFlowableSurroundings(glm::vec3 position)
+	{
+		return std::array<glm::vec3, 5>{
+			position + glm::vec3(1, 0, 0),
+			position - glm::vec3(1, 0, 0),
+			position - glm::vec3(0, 1, 0),
+			position + glm::vec3(0, 0, 1),
+			position - glm::vec3(0, 0, 1),
+		};
+	}
+
+	std::array<glm::vec3, 4> Tile::GetOrthoSurroundings(glm::vec3 position)
+	{
+		return std::array<glm::vec3, 4>{
+			position + glm::vec3(1, 0, 0),
+			position - glm::vec3(1, 0, 0),
+			position + glm::vec3(0, 0, 1),
+			position - glm::vec3(0, 0, 1),
+		};
 	}
 }
