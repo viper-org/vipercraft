@@ -18,6 +18,8 @@ namespace ViperCraft
 		bool GetButtonDown(Key key);
 		
 		void OnKeyDown(std::function<void(Key)> func);
+		void OnMouseButton(std::function<void(MouseButton, bool)> func);
+
 		void OnMouseButtonDown(MouseButton button, std::function<void()> func);
 		void OnMouseButtonUp(MouseButton button, std::function<void()> func);
 

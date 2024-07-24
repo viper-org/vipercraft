@@ -40,10 +40,13 @@ namespace ViperGL
 		};
 
 		Key KeyFromGLFW(int k);
+		MouseButton MouseButtonFromGLFW(int button);
 
 		KeyState GetKeyState(Window& window, Key key);
 
 		void OnKeyDown(Window& window, std::function<void(Key)> func);
+		void OnMouseButton(Window& window, std::function<void(MouseButton, bool)> func);
+
 		void OnMouseButtonDown(Window& window, MouseButton button, std::function<void()> func);
 		void OnMouseButtonUp(Window& window, MouseButton button, std::function<void()> func);
 

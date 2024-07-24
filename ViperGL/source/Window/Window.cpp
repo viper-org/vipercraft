@@ -51,6 +51,7 @@ namespace ViperGL
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glClearColor(0.53f, 0.81f, 0.92f, 1.f);
 
+		glfwSetKeyCallback(mWindowCtx, keyCallback);
 		glfwSetMouseButtonCallback(mWindowCtx, mouseButtonCallback);
 		glfwSetFramebufferSizeCallback(mWindowCtx, framebufferSizeCallback);
 	}
@@ -77,6 +78,12 @@ namespace ViperGL
 	void Window::onKeyDown(std::function<void(Input::Key)> func)
 	{
 		keyHandlers.push_back(func);
+	}
+
+	std::vector<std::function<void(Input::MouseButton, bool)> > mouseButtonHandlers;
+	void Window::onMouseButton(std::function<void(Input::MouseButton, bool)> func) 
+	{
+		mouseButtonHandlers.push_back(func);
 	}
 
 	std::unordered_map<int, std::vector<std::function<void()> > > mouseDownHandlers;
@@ -125,7 +132,7 @@ namespace ViperGL
 		return mWindowCtx;
 	}
 
-	void Window::keyCallback(GLFWwindow* window, int key, int action, int mods)
+	void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 	{
 		if (action == GLFW_PRESS)
 		{
@@ -151,6 +158,11 @@ namespace ViperGL
 			{
 				func();
 			}
+		}
+
+		for (auto& func : mouseButtonHandlers)
+		{
+			func(Input::MouseButtonFromGLFW(button), action == GLFW_PRESS);
 		}
 	}
 
