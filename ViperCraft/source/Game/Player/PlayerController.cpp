@@ -147,7 +147,7 @@ namespace ViperCraft
 
 		if ((isPlayerGroundedAt(mParent.mPosition) || isPlayerInWater()) && Input::GetButtonDown(Input::Key::Space))
 		{
-			constexpr float JUMP_FORCE = 350;
+			constexpr float JUMP_FORCE = 150;
 			mAcceleration.y += JUMP_FORCE * mParent.mJumpHeight;
 		}
 
