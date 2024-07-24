@@ -225,7 +225,7 @@ namespace ViperCraft
 			if (newBlockPos != floor(mParent.mPosition) && newBlockPos != floor(mParent.mPosition) + glm::vec3(0.f, 1.f, 0.f))
 			{
 				auto chunk = ViperCraft::GetInstance()->getWorld()->getPositionChunk(newBlockPos);
-				chunk->getTile(newBlockPos) = Tile::GetTile("cobblestone");
+				chunk->getTile(newBlockPos) = Tile::GetTile("glass");
 				chunk->chunkUpdated();
 			}
 		}

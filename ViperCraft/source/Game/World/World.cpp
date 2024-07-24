@@ -142,7 +142,7 @@ namespace ViperCraft
 						{
 							std::uint8_t id;
 							Read(file, id);
-							chunk.getTileOffset(glm::vec3(x, y, z)) = Tile::GetTile(id);
+							chunk.getTileOffset(glm::vec3(x, y, z)) = Tile::GetTile(static_cast<Block>(id));
 						}
 					}
 				}
@@ -329,7 +329,7 @@ namespace ViperCraft
 
 	void World::GenerateTree(World& world, Chunk& chunk, float height, glm::vec2 position)
 	{
-		if (chunk.getTile(glm::vec3(position.x, height, position.y))->getName() != "grass_block") return; // trees can only be generated on grass
+		if (chunk.getTile(glm::vec3(position.x, height, position.y))->getId() != Block::GRASS_BLOCK) return; // trees can only be generated on grass
 		constexpr std::array<glm::vec3, 8> surroundings = {
 			glm::vec3(-1, 0, 0),
 			glm::vec3(-1, 0, 1),

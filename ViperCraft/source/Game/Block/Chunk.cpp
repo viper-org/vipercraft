@@ -65,9 +65,9 @@ namespace ViperCraft
 			{
 				for (auto tile : z)
 				{
-					if (tile && tile->getName() != "air") // maybe add tile ids or something to check against here
+					if (tile && tile->getId() != Block::AIR)
 					{
-						if (tile->isLiquid())
+						if (tile->isTransparent())
 							tile->draw(mTransparentRenderBuffer, position, renderQueue);
 						else
 							tile->draw(mRenderBuffer, position, renderQueue);
