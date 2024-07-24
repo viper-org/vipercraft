@@ -63,7 +63,8 @@ namespace ViperCraft
 	{
 		if (keycode == Input::Key::Escape)
 		{
-			ViperCraft::GetInstance()->displayGuiScreen(nullptr);
+			// exit the screen
+			ViperCraft::GetInstance()->getUIManager()->displayScreen(nullptr);
 		}
 	}
 

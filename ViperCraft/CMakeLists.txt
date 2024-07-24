@@ -9,7 +9,7 @@ set(SOURCES
 
 	"source/Game/Block/Tile.cpp"
 	"source/Game/Block/Chunk.cpp"
- "source/Game/World/World.cpp" "source/Game/Player/PlayerController.cpp" "source/Game/Player/Player.cpp" "source/Physics/Collider.cpp" "source/Physics/RayCast.cpp" "source/Game/World/Sky.cpp" "source/Game/Gui/Gui.cpp" "source/Game/Gui/GuiScreen.cpp" "source/Game/Gui/GuiPause.cpp")
+ "source/Game/World/World.cpp" "source/Game/Player/PlayerController.cpp" "source/Game/Player/Player.cpp" "source/Physics/Collider.cpp" "source/Physics/RayCast.cpp" "source/Game/World/Sky.cpp" "source/Game/Gui/Gui.cpp" "source/Game/Gui/GuiScreen.cpp" "source/Game/Gui/GuiPause.cpp" "source/Game/Gui/UIManager.cpp")
 
 set(HEADERS
 	"include/ViperCraft/ViperCraft.h"
@@ -18,7 +18,7 @@ set(HEADERS
 	
 	"include/Game/Block/Tile.h"
 	"include/Game/Block/Chunk.h"
- "include/Game/World/World.h" "include/Game/Player/PlayerController.h" "include/Game/Player/Player.h" "include/Physics/Collider.h" "include/Physics/Raycast.h" "include/Game/World/Sky.h" "include/Game/Gui/Gui.h" "include/Game/Gui/GuiScreen.h" "include/Game/Gui/GuiPause.h")
+ "include/Game/World/World.h" "include/Game/Player/PlayerController.h" "include/Game/Player/Player.h" "include/Physics/Collider.h" "include/Physics/Raycast.h" "include/Game/World/Sky.h" "include/Game/Gui/Gui.h" "include/Game/Gui/GuiScreen.h" "include/Game/Gui/GuiPause.h" "include/Game/Gui/UIManager.h")
 
 set(DEP_SOURCES
 	"deps/stb_perlin/stb_perlin.cpp"

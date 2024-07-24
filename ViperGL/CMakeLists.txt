@@ -14,8 +14,6 @@ set(SOURCES
 
 	"source/Vertex/VertexObject.cpp"
 	"source/Vertex/ElementBuffer.cpp"
-
-	
 	
 	
 	"source/Render/RenderQueue.cpp"
@@ -29,13 +27,8 @@ set(HEADERS
 	"include/public/ViperGL/Window/Input.h"
 
 	"include/public/ViperGL/Render/RenderQueue.h"
-	
-	
 
 	"include/public/ViperGL/Camera/Camera.h"
-
-	
-	
 	
 	"include/Render/Cam.h"
 
