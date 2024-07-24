@@ -22,7 +22,9 @@ namespace ViperCraft
 		ViperGL::UI::PreDraw();
 		if (mActiveScreen != nullptr)
 		{
-			mActiveScreen->drawScreen(1337, 42069); //TODO: GET MOUSE X AND MOUSE Y VERY IMPORTANT
+			float mouseX, mouseY;
+			Input::GetMousePosition(&mouseX, &mouseY);
+			mActiveScreen->drawScreen(mouseX, mouseY);
 		}
 		else
 		{
@@ -80,9 +82,13 @@ namespace ViperCraft
 		mActiveScreen->handleKeyboardInput(key);
 	}
 
-	void UIManager::mouseButtonHandler(Input::MouseButton btn, bool state)
+	void UIManager::mouseButtonHandler(Input::MouseButton button, bool state)
 	{
 		if (mActiveScreen)
-			mActiveScreen->handleMouseInput(1337, 69420, btn, state); //TODO: GET MOUSE X AND MOUSE Y VERY IMPORTANT
+		{
+			float mouseX, mouseY;
+			Input::GetMousePosition(&mouseX, &mouseY);
+			mActiveScreen->handleMouseInput(mouseX, mouseY, button, state);
+		}
 	}
 }

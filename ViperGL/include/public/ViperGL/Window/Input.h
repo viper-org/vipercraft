@@ -50,6 +50,7 @@ namespace ViperGL
 		void OnMouseButtonDown(Window& window, MouseButton button, std::function<void()> func);
 		void OnMouseButtonUp(Window& window, MouseButton button, std::function<void()> func);
 
+		void GetMousePosition(Window& window, float* x, float* y);
 		float GetMouseAxis(Window& window, MouseAxis axis);
 		void SetCursorLocked(Window& window, bool locked);
 	}

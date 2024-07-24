@@ -23,6 +23,7 @@ namespace ViperCraft
 		void OnMouseButtonDown(MouseButton button, std::function<void()> func);
 		void OnMouseButtonUp(MouseButton button, std::function<void()> func);
 
+		void GetMousePosition(float* x, float* y);
 		float GetInputAxis(InputAxis axis);
 		void SetCursorLocked(bool locked);
 	}

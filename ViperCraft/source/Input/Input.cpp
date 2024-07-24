@@ -41,6 +41,11 @@ namespace ViperCraft
 			ViperGL::Input::OnMouseButtonUp(*gameWindow, button, func);
 		}
 
+		void GetMousePosition(float* x, float* y)
+		{ // assert that gameWindow is initialized here
+			ViperGL::Input::GetMousePosition(*gameWindow, x, y);
+		}
+
 		float GetInputAxis(InputAxis axis)
 		{ // assert that gameWindow is initialized here
 			return ViperGL::Input::GetMouseAxis(*gameWindow, axis);

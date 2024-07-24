@@ -28,6 +28,6 @@ namespace ViperCraft
 		bool mGameInFocus;
 
 		void keyDownHandler(Input::Key key);
-		void mouseButtonHandler(Input::MouseButton btn, bool state);
+		void mouseButtonHandler(Input::MouseButton button, bool state);
 	};
 }

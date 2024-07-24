@@ -397,6 +397,16 @@ namespace ViperGL
 			window.onMouseButtonUp(GLFWMouseButton(button), func);
 		}
 
+		void GetMousePosition(Window& window, float* x, float* y)
+		{
+			double currX, currY;
+			GLFWwindow* windowCtx = window.getWindowCtx();
+			glfwGetCursorPos(windowCtx, &currX, &currY);
+
+			*x = currX;
+			*y = currY;
+		}
+
 		float GetMouseAxis(Window& window, MouseAxis axis)
 		{
 			constexpr float SENSITIVITY = 20.f;
