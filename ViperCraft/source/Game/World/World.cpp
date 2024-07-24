@@ -264,6 +264,7 @@ namespace ViperCraft
 		}
 
 		GenerateCaves(world, seed);
+		GenerateOres(world);
 
 		world.mSpawnPoint = playerSpawn;
 		auto createdTime = std::chrono::system_clock::now();
@@ -297,13 +298,89 @@ namespace ViperCraft
 						auto chunk = world.getPositionChunk(glm::vec3(x, y, z));
 						chunk->getTile(glm::vec3(x, y, z)) = nullptr; // air
 					}
-					else if (noise >= 0.0997f || noise <= -0.14f)
+				}
+			}
+		}
+	}
+
+	void World::GenerateOres(World& world)
+	{
+		constexpr float COAL_LOWER_SPAWNRATE = 0.975f;
+		constexpr int COAL_LOWER_SPAWN_ATTEMPTS = 15;
+		constexpr int COAL_LOWER_MIN_HEIGHT = 0;
+		constexpr int COAL_LOWER_MAX_HEIGHT = 35;
+
+		constexpr float COAL_HIGHER_SPAWNRATE = 0.9f;
+		constexpr int COAL_HIGHER_SPAWN_ATTEMPTS = 25;
+		constexpr int COAL_HIGHER_MIN_HEIGHT = 35;
+		constexpr int COAL_HIGHER_MAX_HEIGHT = 64;
+
+
+		constexpr int IRON_SPAWN_ATTEMPTS = 15;
+		constexpr int IRON_MAX_HEIGHT = 56;
+
+		std::function<void(std::string, glm::vec3, float, float)> placeOreAt;
+		placeOreAt = [&world, &placeOreAt](std::string oreType, glm::vec3 position, float currChance, float chanceMod) {
+			auto chunk = world.getPositionChunk(position);
+			if (!chunk) return;
+			auto& tile = chunk->getTile(position);
+			if (!tile) return;
+			if (tile->getId() == Block::STONE)
+			{
+				tile = Tile::GetTile(oreType);
+				for (const auto& pos : tile->GetSurroundings(position))
+				{
+					if (rand() >= RAND_MAX * currChance)
 					{
-						if (y < 57)
-						{
-							auto chunk = world.getPositionChunk(glm::vec3(x, y, z));
-							chunk->getTile(glm::vec3(x, y, z)) = Tile::GetTile("coal_ore");
-						}
+						placeOreAt(oreType, pos, currChance * chanceMod, chanceMod);
+					}
+				}
+			}
+		};
+
+		for (auto& chunks : world.mLoadedChunks)
+		{
+			for (auto& chunk : chunks)
+			{
+				// coal from y0 to y35
+				for (auto i = 0; i < COAL_LOWER_SPAWN_ATTEMPTS; ++i)
+				{
+					if (rand() >= RAND_MAX * COAL_LOWER_SPAWNRATE)
+					{
+						float x = rand() % 16;
+						float y = (rand() % (COAL_LOWER_MAX_HEIGHT - COAL_LOWER_MIN_HEIGHT) + COAL_LOWER_MIN_HEIGHT);
+						float z = rand() % 16;
+						glm::vec3 pos = glm::vec3(x, y, z) + chunk.mPosition;
+
+						placeOreAt("coal_ore", pos, 0.09f, 1.85f);
+					}
+				}
+
+				// coal from y35 to y64
+				for (auto i = 0; i < COAL_HIGHER_SPAWN_ATTEMPTS; ++i)
+				{
+					if (rand() >= RAND_MAX * COAL_HIGHER_SPAWNRATE)
+					{
+						float x = rand() % 16;
+						float y = (rand() % (COAL_HIGHER_MAX_HEIGHT - COAL_HIGHER_MIN_HEIGHT) + COAL_HIGHER_MIN_HEIGHT);
+						float z = rand() % 16;
+						glm::vec3 pos = glm::vec3(x, y, z) + chunk.mPosition;
+
+						placeOreAt("coal_ore", pos, 0.09f, 1.85f);
+					}
+				}
+
+				// iron
+				for (auto i = 0; i < IRON_SPAWN_ATTEMPTS; ++i)
+				{
+					if (rand() >= RAND_MAX * 0.93)
+					{
+						float x = rand() % 16;
+						float y = rand() % IRON_MAX_HEIGHT;
+						float z = rand() % 16;
+						glm::vec3 pos = glm::vec3(x, y, z) + chunk.mPosition;
+
+						placeOreAt("iron_ore", pos, 0.09f, 2.85f);
 					}
 				}
 			}

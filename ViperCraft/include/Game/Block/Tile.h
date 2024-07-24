@@ -19,7 +19,8 @@ namespace ViperCraft
 		LEAVES,
 		GRAVEL,
 		COAL_ORE,
-		GLASS
+		GLASS,
+		IRON_ORE
 	};
 
 	class Tile

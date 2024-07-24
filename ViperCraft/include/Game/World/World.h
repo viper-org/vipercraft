@@ -32,6 +32,7 @@ namespace ViperCraft
 		unsigned long long mCreatedAt;
 
 		static void GenerateCaves(World& world, unsigned long long seed);
+		static void GenerateOres(World& world);
 		static void GenerateWater(Chunk& chunk, float height, glm::vec2 position);
 		static void GenerateTree(World& world, Chunk& chunk, float height, glm::vec2 position);
 		static void PlaceTree(World& world, glm::vec3 position);

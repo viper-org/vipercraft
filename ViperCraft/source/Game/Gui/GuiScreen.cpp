@@ -14,8 +14,8 @@ namespace ViperCraft
 
 	void GuiScreen::updateScreen() 
 	{
-		(void) Input::GetInputAxis(Input::InputAxis::AxisX);
-		(void) Input::GetInputAxis(Input::InputAxis::AxisY);
+		std::ignore = Input::GetInputAxis(Input::InputAxis::AxisX);
+		std::ignore = Input::GetInputAxis(Input::InputAxis::AxisY);
 	}
 
 	void GuiScreen::onGuiClosed() 

@@ -108,6 +108,15 @@ namespace ViperCraft
 			ViperGL::TextureCoords{1,3},
 			ViperGL::TextureCoords{1,3},
 		}, Block::GLASS)},
+
+		{ "iron_ore", Tile({
+			ViperGL::TextureCoords{2,3},
+			ViperGL::TextureCoords{2,3},
+			ViperGL::TextureCoords{2,3},
+			ViperGL::TextureCoords{2,3},
+			ViperGL::TextureCoords{2,3},
+			ViperGL::TextureCoords{2,3},
+		}, Block::IRON_ORE)},
 	};
 
 	Tile::Tile()
