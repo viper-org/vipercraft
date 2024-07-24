@@ -1,5 +1,7 @@
 #include <Game/World/World.h>
 
+#include <Game/World/Feature/OreFeature.h>
+
 #include <ViperCraft/ViperCraft.h>
 
 #include <stb_perlin/stb_perlin.h>
@@ -219,15 +221,15 @@ namespace ViperCraft
 							) * WORLDGEN_INTENSITY + 60;
 						chunk.mHeights[i + j * 16] = height;
 
-						chunk.getTile(glm::vec3(chunk.mPosition.x + i, height, chunk.mPosition.z + j)) = Tile::GetTile("grass_block");
+						chunk.getTile(glm::vec3(chunk.mPosition.x + i, height, chunk.mPosition.z + j)) = Tile::GetTile(Block::GRASS_BLOCK);
 						for (int y = 1; y < 3; ++y)
 						{
 							if (height - y < 0) break;
-							chunk.getTile(glm::vec3(chunk.mPosition.x + i, height - y, chunk.mPosition.z + j)) = Tile::GetTile("dirt");
+							chunk.getTile(glm::vec3(chunk.mPosition.x + i, height - y, chunk.mPosition.z + j)) = Tile::GetTile(Block::DIRT);
 						}
 						for (int y = height-3; y >= 0; --y)
 						{
-							chunk.getTile(glm::vec3(chunk.mPosition.x + i, y, chunk.mPosition.z + j)) = Tile::GetTile("stone");
+							chunk.getTile(glm::vec3(chunk.mPosition.x + i, y, chunk.mPosition.z + j)) = Tile::GetTile(Block::STONE);
 						}
 						if (chunk.mPosition.x + i == center && chunk.mPosition.z + j == center)
 							playerSpawn.y = height + 1.f;
@@ -305,83 +307,13 @@ namespace ViperCraft
 
 	void World::GenerateOres(World& world)
 	{
-		constexpr float COAL_LOWER_SPAWNRATE = 0.975f;
-		constexpr int COAL_LOWER_SPAWN_ATTEMPTS = 15;
-		constexpr int COAL_LOWER_MIN_HEIGHT = 0;
-		constexpr int COAL_LOWER_MAX_HEIGHT = 35;
-
-		constexpr float COAL_HIGHER_SPAWNRATE = 0.9f;
-		constexpr int COAL_HIGHER_SPAWN_ATTEMPTS = 25;
-		constexpr int COAL_HIGHER_MIN_HEIGHT = 35;
-		constexpr int COAL_HIGHER_MAX_HEIGHT = 64;
-
-
-		constexpr int IRON_SPAWN_ATTEMPTS = 15;
-		constexpr int IRON_MAX_HEIGHT = 56;
-
-		std::function<void(std::string, glm::vec3, float, float)> placeOreAt;
-		placeOreAt = [&world, &placeOreAt](std::string oreType, glm::vec3 position, float currChance, float chanceMod) {
-			auto chunk = world.getPositionChunk(position);
-			if (!chunk) return;
-			auto& tile = chunk->getTile(position);
-			if (!tile) return;
-			if (tile->getId() == Block::STONE)
-			{
-				tile = Tile::GetTile(oreType);
-				for (const auto& pos : tile->GetSurroundings(position))
-				{
-					if (rand() >= RAND_MAX * currChance)
-					{
-						placeOreAt(oreType, pos, currChance * chanceMod, chanceMod);
-					}
-				}
-			}
-		};
-
 		for (auto& chunks : world.mLoadedChunks)
 		{
 			for (auto& chunk : chunks)
 			{
-				// coal from y0 to y35
-				for (auto i = 0; i < COAL_LOWER_SPAWN_ATTEMPTS; ++i)
+				for (const auto& oreFeature : Feature::OreFeature::GetOreFeatures())
 				{
-					if (rand() >= RAND_MAX * COAL_LOWER_SPAWNRATE)
-					{
-						float x = rand() % 16;
-						float y = (rand() % (COAL_LOWER_MAX_HEIGHT - COAL_LOWER_MIN_HEIGHT) + COAL_LOWER_MIN_HEIGHT);
-						float z = rand() % 16;
-						glm::vec3 pos = glm::vec3(x, y, z) + chunk.mPosition;
-
-						placeOreAt("coal_ore", pos, 0.09f, 1.85f);
-					}
-				}
-
-				// coal from y35 to y64
-				for (auto i = 0; i < COAL_HIGHER_SPAWN_ATTEMPTS; ++i)
-				{
-					if (rand() >= RAND_MAX * COAL_HIGHER_SPAWNRATE)
-					{
-						float x = rand() % 16;
-						float y = (rand() % (COAL_HIGHER_MAX_HEIGHT - COAL_HIGHER_MIN_HEIGHT) + COAL_HIGHER_MIN_HEIGHT);
-						float z = rand() % 16;
-						glm::vec3 pos = glm::vec3(x, y, z) + chunk.mPosition;
-
-						placeOreAt("coal_ore", pos, 0.09f, 1.85f);
-					}
-				}
-
-				// iron
-				for (auto i = 0; i < IRON_SPAWN_ATTEMPTS; ++i)
-				{
-					if (rand() >= RAND_MAX * 0.93)
-					{
-						float x = rand() % 16;
-						float y = rand() % IRON_MAX_HEIGHT;
-						float z = rand() % 16;
-						glm::vec3 pos = glm::vec3(x, y, z) + chunk.mPosition;
-
-						placeOreAt("iron_ore", pos, 0.09f, 2.85f);
-					}
+					oreFeature.generateInChunk(chunk.mPosition);
 				}
 			}
 		}
@@ -394,13 +326,13 @@ namespace ViperCraft
 		if (height < WATER_HEIGHT)
 		{
 			bool generateWater = !(height >= WATER_HEIGHT - .6);
-			std::string block = generateWater ? "water" : "sand";
+			auto block = generateWater ? Block::WATER : Block::SAND;
 			for (int y = height; y < WATER_HEIGHT; ++y)
 			{
 				chunk.getTile(glm::vec3(position.x, y, position.y)) = Tile::GetTile(block);
 			}
 			if (generateWater)
-				chunk.getTile(glm::vec3(position.x, height-1, position.y)) = Tile::GetTile("gravel");
+				chunk.getTile(glm::vec3(position.x, height-1, position.y)) = Tile::GetTile(Block::GRAVEL);
 		}
 	}
 
@@ -470,7 +402,7 @@ namespace ViperCraft
 		auto trunkChunk = world.getPositionChunk(position);
 		for (int y = 0; y < tree_height; ++y)
 		{
-			trunkChunk->getTile(glm::vec3(position.x, position.y + y, position.z)) = Tile::GetTile("wood");
+			trunkChunk->getTile(glm::vec3(position.x, position.y + y, position.z)) = Tile::GetTile(Block::WOOD);
 		}
 
 		// draw the leaves directly around the log
@@ -480,7 +412,7 @@ namespace ViperCraft
 			{
 				auto currChunk = ViperCraft::GetInstance()->getWorld()->getPositionChunk(glm::vec3(position.x, position.y + y, position.z) + leaf);
 				if (!currChunk) continue;
-				currChunk->getTile(glm::vec3(position.x, position.y + y, position.z) + leaf) = Tile::GetTile("leaves");
+				currChunk->getTile(glm::vec3(position.x, position.y + y, position.z) + leaf) = Tile::GetTile(Block::LEAVES);
 			}
 		}
 
@@ -489,7 +421,7 @@ namespace ViperCraft
 		{
 			auto currChunk = ViperCraft::GetInstance()->getWorld()->getPositionChunk(glm::vec3(position.x, position.y + tree_height - 1, position.z) + leaf);
 			if (!currChunk) continue;
-			currChunk->getTile(glm::vec3(position.x, position.y + tree_height - 1, position.z) + leaf) = Tile::GetTile("leaves");
+			currChunk->getTile(glm::vec3(position.x, position.y + tree_height - 1, position.z) + leaf) = Tile::GetTile(Block::LEAVES);
 		}
 
 		// draw the last layer of leaves
@@ -499,7 +431,7 @@ namespace ViperCraft
 			{
 				auto currChunk = ViperCraft::GetInstance()->getWorld()->getPositionChunk(glm::vec3(position.x, position.y + y, position.z) + leaf);
 				if (!currChunk) continue;
-				currChunk->getTile(glm::vec3(position.x, position.y + y, position.z) + leaf) = Tile::GetTile("leaves");
+				currChunk->getTile(glm::vec3(position.x, position.y + y, position.z) + leaf) = Tile::GetTile(Block::LEAVES);
 			}
 		}
 	}

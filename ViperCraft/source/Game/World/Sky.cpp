@@ -34,7 +34,7 @@ namespace ViperCraft
 						glm::vec3(x+1, 100, z+1),
 						glm::vec3(x, 100, z+1),
 					};
-					renderQueue->quad(mRenderBuffer, corners, glm::vec2(3, 3), 0.9f, 0.8f);
+					renderQueue->quad(mRenderBuffer, corners, glm::vec2(3, 2), 0.9f, 0.8f);
 				}
 			}
 		}

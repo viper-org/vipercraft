@@ -20,7 +20,8 @@ namespace ViperCraft
 		GRAVEL,
 		COAL_ORE,
 		GLASS,
-		IRON_ORE
+		IRON_ORE,
+		GOLD_ORE
 	};
 
 	class Tile
@@ -38,7 +39,6 @@ namespace ViperCraft
 		bool isSolidTile() const;
 		bool isLiquid() const;
 
-		static Tile* GetTile(std::string_view name);
 		static Tile* GetTile(Block id);
 		static std::array<glm::vec3, 6> GetSurroundings(glm::vec3 position);
 		static std::array<glm::vec3, 5> GetFlowableSurroundings(glm::vec3 position);

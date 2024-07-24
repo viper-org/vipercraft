@@ -6,11 +6,10 @@
 
 namespace ViperCraft
 {
-	constinit int blockid = 0;
-	std::unordered_map<std::string_view, Tile> tiles = {
-		{ "air", Tile({-1,-1}, Block::AIR)},
+	std::unordered_map<Block, Tile> tiles = {
+		{ Block::AIR, Tile({-1,-1}, Block::AIR)},
 
-		{ "cobblestone", Tile({
+		{ Block::COBBLESTONE, Tile({
 			ViperGL::TextureCoords{0,0},
 			ViperGL::TextureCoords{0,0},
 			ViperGL::TextureCoords{0,0},
@@ -19,7 +18,7 @@ namespace ViperCraft
 			ViperGL::TextureCoords{0,0},
 		}, Block::COBBLESTONE)},
 
-		{ "dirt", Tile({
+		{ Block::DIRT, Tile({
 			ViperGL::TextureCoords{1,0},
 			ViperGL::TextureCoords{1,0},
 			ViperGL::TextureCoords{1,0},
@@ -28,7 +27,7 @@ namespace ViperCraft
 			ViperGL::TextureCoords{1,0},
 		}, Block::DIRT)},
 
-		{ "grass_block", Tile({
+		{ Block::GRASS_BLOCK, Tile({
 			ViperGL::TextureCoords{1,0},
 			ViperGL::TextureCoords{3,0},
 			ViperGL::TextureCoords{2,0},
@@ -37,7 +36,7 @@ namespace ViperCraft
 			ViperGL::TextureCoords{2,0},
 		}, Block::GRASS_BLOCK)},
 
-		{ "stone", Tile({
+		{ Block::STONE, Tile({
 			ViperGL::TextureCoords{0,1},
 			ViperGL::TextureCoords{0,1},
 			ViperGL::TextureCoords{0,1},
@@ -46,7 +45,7 @@ namespace ViperCraft
 			ViperGL::TextureCoords{0,1},
 		}, Block::STONE)},
 
-		{ "water", Tile({
+		{ Block::WATER, Tile({
 			ViperGL::TextureCoords{1,1},
 			ViperGL::TextureCoords{1,1},
 			ViperGL::TextureCoords{1,1},
@@ -55,7 +54,7 @@ namespace ViperCraft
 			ViperGL::TextureCoords{1,1},
 		}, Block::WATER)},
 
-		{ "sand", Tile({
+		{ Block::SAND, Tile({
 			ViperGL::TextureCoords{2,1},
 			ViperGL::TextureCoords{2,1},
 			ViperGL::TextureCoords{2,1},
@@ -64,7 +63,7 @@ namespace ViperCraft
 			ViperGL::TextureCoords{2,1},
 		}, Block::SAND)},
 
-		{ "wood", Tile({
+		{ Block::WOOD, Tile({
 			ViperGL::TextureCoords{0,2},
 			ViperGL::TextureCoords{0,2},
 			ViperGL::TextureCoords{1,2},
@@ -73,7 +72,7 @@ namespace ViperCraft
 			ViperGL::TextureCoords{1,2},
 		}, Block::WOOD)},
 
-		{ "leaves", Tile({
+		{ Block::LEAVES, Tile({
 			ViperGL::TextureCoords{2,2},
 			ViperGL::TextureCoords{2,2},
 			ViperGL::TextureCoords{2,2},
@@ -82,7 +81,7 @@ namespace ViperCraft
 			ViperGL::TextureCoords{2,2},
 		}, Block::LEAVES)},
 
-		{ "gravel", Tile({
+		{ Block::GRAVEL, Tile({
 			ViperGL::TextureCoords{3,1},
 			ViperGL::TextureCoords{3,1},
 			ViperGL::TextureCoords{3,1},
@@ -91,7 +90,7 @@ namespace ViperCraft
 			ViperGL::TextureCoords{3,1},
 		}, Block::GRAVEL)},
 
-		{ "coal_ore", Tile({
+		{ Block::COAL_ORE, Tile({
 			ViperGL::TextureCoords{0,3},
 			ViperGL::TextureCoords{0,3},
 			ViperGL::TextureCoords{0,3},
@@ -100,7 +99,7 @@ namespace ViperCraft
 			ViperGL::TextureCoords{0,3},
 		}, Block::COAL_ORE)},
 
-		{ "glass", Tile({
+		{ Block::GLASS, Tile({
 			ViperGL::TextureCoords{1,3},
 			ViperGL::TextureCoords{1,3},
 			ViperGL::TextureCoords{1,3},
@@ -109,7 +108,7 @@ namespace ViperCraft
 			ViperGL::TextureCoords{1,3},
 		}, Block::GLASS)},
 
-		{ "iron_ore", Tile({
+		{ Block::IRON_ORE, Tile({
 			ViperGL::TextureCoords{2,3},
 			ViperGL::TextureCoords{2,3},
 			ViperGL::TextureCoords{2,3},
@@ -117,6 +116,15 @@ namespace ViperCraft
 			ViperGL::TextureCoords{2,3},
 			ViperGL::TextureCoords{2,3},
 		}, Block::IRON_ORE)},
+
+		{ Block::GOLD_ORE, Tile({
+			ViperGL::TextureCoords{3,3},
+			ViperGL::TextureCoords{3,3},
+			ViperGL::TextureCoords{3,3},
+			ViperGL::TextureCoords{3,3},
+			ViperGL::TextureCoords{3,3},
+			ViperGL::TextureCoords{3,3},
+		}, Block::GOLD_ORE) },
 	};
 
 	Tile::Tile()
@@ -195,7 +203,7 @@ namespace ViperCraft
 				auto& tile = chunk->getTile(pos);
 				if (!tile)
 				{
-					tile = Tile::GetTile("water");
+					tile = Tile::GetTile(Block::WATER);
 					tile->update(pos);
 				}
 			}
@@ -222,18 +230,9 @@ namespace ViperCraft
 		return mId == Block::WATER;
 	}
 
-	Tile* Tile::GetTile(std::string_view name)
-	{
-		return &tiles[name];
-	}
-
 	Tile* Tile::GetTile(Block id)
 	{
-		auto it = std::find_if(tiles.begin(), tiles.end(), [id](const auto& tile) {
-			return tile.second.getId() == id;
-			});
-		if (it == tiles.end()) return nullptr;
-		return &it->second;
+		return &tiles[id];
 	}
 
 	std::array<glm::vec3, 6> Tile::GetSurroundings(glm::vec3 position)
